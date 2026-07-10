@@ -1,6 +1,6 @@
 import os
 import uuid
-import shutil
+import qrcode
 from typing import Dict, Any
 from app.tools.base import BaseTool
 from app.config import OUTPUT_DIR
@@ -16,17 +16,45 @@ class QrCodeTool(BaseTool):
         return [".txt", ".png", ".jpg", ".jpeg"]
 
     def execute(self, file_path: str, params: Dict[str, Any], user_plan: str) -> str:
-        # Simula a geração gravando uma imagem mock do QR code no outputs
         unique_id = uuid.uuid4().hex
         output_filename = f"qrcode_{unique_id}.png"
         output_path = os.path.join(OUTPUT_DIR, output_filename)
         
-        # Como o QR code pode ser gerado a partir do texto do parâmetro,
-        # vamos apenas gerar um arquivo ou copiar um mock simples
-        # Escreve um arquivo de imagem dummy para simular o download
-        with open(output_path, "wb") as f:
-            # Escreve um binário de 1 pixel PNG para simulação ou similar
-            # Para testes rápidos, criamos um arquivo vazio ou cópia simples
-            f.write(b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4\x00\x00\x00\rIDATx\x9cc`\x00\x00\x00\x02\x00\x01H\xaf\xa4q\x00\x00\x00\x00IEND\xaeB`\x82")
+        text = params.get("text", "")
+        # Se não vier texto nos parâmetros, tenta ler do arquivo temporário
+        if not text and os.path.exists(file_path):
+            try:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    text = f.read().strip()
+            except Exception:
+                pass
+                
+        if not text:
+            text = "https://facilita-alpha.vercel.app"
             
+        color = params.get("color", "000000")
+        if not color.startswith("#"):
+            fill_color = f"#{color}"
+        else:
+            fill_color = color
+            
+        size_str = params.get("size", "300")
+        try:
+            size_px = int(size_str)
+        except ValueError:
+            size_px = 300
+            
+        box_size = max(1, size_px // 30)
+            
+        qr = qrcode.QRCode(
+            version=1,
+            box_size=box_size,
+            border=4
+        )
+        qr.add_data(text)
+        qr.make(fit=True)
+        
+        img = qr.make_image(fill_color=fill_color, back_color="white")
+        img.save(output_path)
+        
         return output_path

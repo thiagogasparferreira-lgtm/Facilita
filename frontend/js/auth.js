@@ -3,7 +3,10 @@
    Comunicação com o Backend FastAPI para Login, Cadastro e Validação JWT.
    ========================================================================== */
 
-const API_AUTH_URL = "http://localhost:8000/api/v1/auth";
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "https://facilita-api-backend.onrender.com";
+const API_AUTH_URL = `${API_BASE_URL}/api/v1/auth`;
 
 // Exibe mensagem de erro no formulário
 function showAuthError(formId, message) {

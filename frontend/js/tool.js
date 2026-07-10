@@ -3,7 +3,9 @@
    Roteamento dinâmico no frontend, metadados SEO automáticos e chamadas ao backend FastAPI.
    ========================================================================== */
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "https://facilita-api-backend.onrender.com";
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. CARREGAMENTO DOS METADADOS DA FERRAMENTA

@@ -3,45 +3,53 @@
    Controle de Abas, Sessão, Favoritos Dinâmicos e Métricas do Admin.
    ========================================================================== */
 
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "https://facilita-api-backend.onrender.com";
+const ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. SEGURANÇA E LEITURA DE SESSÃO
-  const isPageAdmin = window.location.pathname.includes('/admin/');
-  const requiredRole = isPageAdmin ? 'admin' : null;
-  const user = checkAuth(requiredRole);
-  
-  if (!user) return; // Se redirecionou, encerra execução
+  try {
+    // 1. SEGURANÇA E LEITURA DE SESSÃO
+    const isPageAdmin = window.location.pathname.includes('/admin/');
+    const requiredRole = isPageAdmin ? 'admin' : null;
+    const user = checkAuth(requiredRole);
+    
+    if (!user) return; // Se redirecionou, encerra execução
 
-  // Atualizar dados de exibição do usuário na Sidebar
-  const avatarInitials = document.getElementById('user-avatar-initials');
-  const userDispName = document.getElementById('user-display-name');
-  const userDispPlan = document.getElementById('user-display-plan');
-  
-  if (avatarInitials) avatarInitials.textContent = user.avatar || user.name.substring(0,2).toUpperCase();
-  if (userDispName) userDispName.textContent = user.name;
-  if (userDispPlan) {
-    userDispPlan.textContent = user.plan;
-    userDispPlan.className = `status-badge ${user.plan === 'PRO' ? 'status-success' : 'status-pending'}`;
-  }
+    // Atualizar dados de exibição do usuário na Sidebar
+    const avatarInitials = document.getElementById('user-avatar-initials');
+    const userDispName = document.getElementById('user-display-name');
+    const userDispPlan = document.getElementById('user-display-plan');
+    
+    const userName = user.name || user.email || "Usuário";
+    const userAvatar = user.avatar || userName.substring(0,2).toUpperCase();
+    const userPlan = user.plan || "FREE";
 
-  // URL Base Global
-  const ADMIN_API_URL = "http://localhost:8000/api/v1/admin";
+    if (avatarInitials) avatarInitials.textContent = userAvatar;
+    if (userDispName) userDispName.textContent = userName;
+    if (userDispPlan) {
+      userDispPlan.textContent = userPlan === 'PRO' ? 'Plano PRO' : 'Plano Gratuito';
+      userDispPlan.className = `status-badge ${userPlan === 'PRO' ? 'status-success' : 'status-pending'}`;
+    }
 
-  // 2. CONTROLE DE NAVEGAÇÃO ENTRE ABAS
-  const sidebarLinks = document.querySelectorAll('.sidebar-item-link');
-  sidebarLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      const tabId = link.getAttribute('data-tab');
-      
-      // Remover classe active das sidebars
-      sidebarLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-      
-      // Mudar aba visível
-      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-      const targetPane = document.getElementById(`tab-${tabId}`);
-      if (targetPane) targetPane.classList.add('active');
+    // 2. CONTROLE DE NAVEGAÇÃO ENTRE ABAS
+    const sidebarLinks = document.querySelectorAll('.sidebar-item-link');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        const tabId = link.getAttribute('data-tab');
+        if (!tabId) return; // Ignora se não houver data-tab definido
+        
+        // Remover classe active das sidebars
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        
+        // Mudar aba visível
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+        const targetPane = document.getElementById(`tab-${tabId}`);
+        if (targetPane) targetPane.classList.add('active');
+      });
     });
-  });
 
   // Botão de Logout
   const logoutBtn = document.getElementById('logout-btn');
@@ -108,6 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializa ícones dinâmicos nas abas
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
+  }
+  } catch (e) {
+    console.error("Erro na inicialização da dashboard:", e);
   }
 });
 
@@ -241,7 +252,7 @@ function setupUserUpgradeFlow(user) {
       
       try {
         // Gera o PIX
-        const res = await fetch("http://localhost:8000/api/v1/payments/pix/generate", {
+        const res = await fetch(`${API_BASE_URL}/api/v1/payments/pix/generate`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.token}` },
           body: JSON.stringify({ plan_name: "PRO_MONTHLY" })
@@ -253,7 +264,7 @@ function setupUserUpgradeFlow(user) {
           
           // Simula o Webhook MercadoPago confirmando pagamento
           setTimeout(async () => {
-            const webhookRes = await fetch("http://localhost:8000/api/v1/payments/webhook/mock", {
+            const webhookRes = await fetch(`${API_BASE_URL}/api/v1/payments/webhook/mock`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ transaction_id: data.transaction_id, status: "approved" })
