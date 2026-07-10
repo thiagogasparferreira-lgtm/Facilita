@@ -38,6 +38,7 @@ class ToolRegistry:
         self.register("qr-code", QrCodeTool)
         self.register("password-gen", PasswordGenTool)
         self.register("remove-bg", RemoveBgTool)
+        self.register("remover-fundo", RemoveBgTool)
 
     def get_tool(self, tool_id: str) -> BaseTool:
         if tool_id not in self._registry:

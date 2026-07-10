@@ -7,7 +7,7 @@ from app.config import OUTPUT_DIR
 class RemoveBgTool(BaseTool):
     @property
     def tool_id(self) -> str:
-        return "remove-bg"
+        return "remover-fundo"
 
     @property
     def allowed_extensions(self) -> list:
