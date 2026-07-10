@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Facilita</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" style="background-color: #0F172A; border-right: none; color: white;">
+      <div class="sidebar-top">
+        <a href="../index.html" class="sidebar-logo" style="color: white;">
+          <div class="logo-icon" style="width: 28px; height: 28px; border-radius: 8px;">
+            <i data-lucide="zap"></i>
+          </div>
+          <span>Facilita Admin</span>
+        </a>
+        
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#" class="sidebar-item-link active" style="color: white; background-color: rgba(255,255,255,0.1);">
+              <i data-lucide="bar-chart-3"></i>
+              <span>Métricas</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-item-link" style="color: var(--gray-400);">
+              <i data-lucide="users"></i>
+              <span>Usuários</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-item-link" style="color: var(--gray-400);">
+              <i data-lucide="settings"></i>
+              <span>Configurações</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-user" style="border-top-color: rgba(255,255,255,0.1);">
+        <div class="sidebar-user-info">
+          <div class="sidebar-avatar" style="background-color: #EF4444;">A</div>
+          <div class="sidebar-user-details">
+            <h5 style="color: white;">Administrador</h5>
+            <span style="color: var(--gray-400);">Root</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <div class="content-header">
+        <div class="content-header-title">
+          <h1>Visão Geral do Negócio</h1>
+          <p>Acompanhe o crescimento e uso da plataforma Facilita.</p>
+        </div>
+        <div style="background-color: white; border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;">
+          Últimos 30 dias <i data-lucide="chevron-down" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-left: 8px;"></i>
+        </div>
+      </div>
+
+      <div class="admin-metrics-grid">
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <span class="dashboard-card-title">Receita (MRR)</span>
+            <i data-lucide="dollar-sign" style="color: #10B981;"></i>
+          </div>
+          <div class="dashboard-card-value">R$ 12.450</div>
+          <div class="dashboard-card-desc" style="color: #10B981; font-weight: 600;"><i data-lucide="trending-up" style="width: 12px; height: 12px;"></i> +15% vs mês passado</div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <span class="dashboard-card-title">Total de Usuários</span>
+            <i data-lucide="users" style="color: var(--primary-blue);"></i>
+          </div>
+          <div class="dashboard-card-value">4.208</div>
+          <div class="dashboard-card-desc" style="color: #10B981; font-weight: 600;"><i data-lucide="trending-up" style="width: 12px; height: 12px;"></i> +240 nesta semana</div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <span class="dashboard-card-title">Assinaturas Ativas</span>
+            <i data-lucide="credit-card" style="color: #F59E0B;"></i>
+          </div>
+          <div class="dashboard-card-value">625</div>
+          <div class="dashboard-card-desc">Taxa de conversão: 14.8%</div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <span class="dashboard-card-title">Arquivos Processados</span>
+            <i data-lucide="file-check" style="color: #8B5CF6;"></i>
+          </div>
+          <div class="dashboard-card-value">18.5k</div>
+          <div class="dashboard-card-desc">Volume total no período</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; margin-bottom: 32px;">
+        
+        <!-- Lista de Conversões Recentes -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3>Atividade Recente (Tempo Real)</h3>
+            <a href="#" style="font-size: 13px; color: var(--primary-blue); font-weight: 600;">Ver todos</a>
+          </div>
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Usuário</th>
+                  <th>Ferramenta</th>
+                  <th>Status</th>
+                  <th>Tempo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">M</div> marcos@...</div></td>
+                  <td>Remover Fundo</td>
+                  <td><span class="status-badge status-success">Sucesso</span></td>
+                  <td>Agora</td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">J</div> julia@...</div></td>
+                  <td>PDF para JPG</td>
+                  <td><span class="status-badge status-success">Sucesso</span></td>
+                  <td>2 min atrás</td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">C</div> carlos@...</div></td>
+                  <td>Comprimir PDF</td>
+                  <td><span class="status-badge status-pending">Processando</span></td>
+                  <td>3 min atrás</td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">A</div> ana@...</div></td>
+                  <td>Resumir IA</td>
+                  <td><span class="status-badge status-success">Sucesso</span></td>
+                  <td>10 min atrás</td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">P</div> pedro@...</div></td>
+                  <td>Juntar PDF</td>
+                  <td><span class="status-badge status-success">Sucesso</span></td>
+                  <td>15 min atrás</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Terminal de Logs / Status Servidor -->
+        <div>
+          <h3 style="margin-bottom: 16px;">Status do Sistema</h3>
+          <div class="admin-logs-box">
+            <div class="admin-log-line">[10:25:01] INFO: Worker 1 (PDF) pronto.</div>
+            <div class="admin-log-line">[10:25:14] INFO: Upload de imagem concluído (id: 4920).</div>
+            <div class="admin-log-line" style="color: #F59E0B;">[10:25:15] WARN: IA API Latency > 1500ms.</div>
+            <div class="admin-log-line">[10:25:20] INFO: Conversão PDF para JPG finalizada em 1.2s.</div>
+            <div class="admin-log-line">[10:25:45] INFO: Nova assinatura PRO confirmada (Stripe: sub_KxA...).</div>
+            <div class="admin-log-line">[10:26:01] INFO: Limpeza de cache de arquivos executada. 24GB liberados.</div>
+            <div class="admin-log-line">[10:26:10] INFO: Worker 2 (IA) escalado.</div>
+          </div>
+          
+          <div style="margin-top: 24px;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px;">
+              <span>Uso de CPU</span>
+              <span>42%</span>
+            </div>
+            <div style="background: var(--gray-200); height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 16px;">
+              <div style="background: var(--primary-blue); width: 42%; height: 100%;"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px;">
+              <span>Armazenamento S3</span>
+              <span>78%</span>
+            </div>
+            <div style="background: var(--gray-200); height: 6px; border-radius: 3px; overflow: hidden;">
+              <div style="background: #F59E0B; width: 78%; height: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

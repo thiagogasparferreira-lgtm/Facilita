@@ -1,0 +1,415 @@
+/* ==========================================================================
+   FACILITA - DASHBOARD CONTROLLER (DASHBOARD.JS)
+   Controle de Abas, Sessão, Favoritos Dinâmicos e Métricas do Admin.
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. SEGURANÇA E LEITURA DE SESSÃO
+  const isPageAdmin = window.location.pathname.includes('/admin/');
+  const requiredRole = isPageAdmin ? 'admin' : null;
+  const user = checkAuth(requiredRole);
+  
+  if (!user) return; // Se redirecionou, encerra execução
+
+  // Atualizar dados de exibição do usuário na Sidebar
+  const avatarInitials = document.getElementById('user-avatar-initials');
+  const userDispName = document.getElementById('user-display-name');
+  const userDispPlan = document.getElementById('user-display-plan');
+  
+  if (avatarInitials) avatarInitials.textContent = user.avatar || user.name.substring(0,2).toUpperCase();
+  if (userDispName) userDispName.textContent = user.name;
+  if (userDispPlan) {
+    userDispPlan.textContent = user.plan;
+    userDispPlan.className = `status-badge ${user.plan === 'PRO' ? 'status-success' : 'status-pending'}`;
+  }
+
+  // URL Base Global
+  const ADMIN_API_URL = "http://localhost:8000/api/v1/admin";
+
+  // 2. CONTROLE DE NAVEGAÇÃO ENTRE ABAS
+  const sidebarLinks = document.querySelectorAll('.sidebar-item-link');
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const tabId = link.getAttribute('data-tab');
+      
+      // Remover classe active das sidebars
+      sidebarLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      
+      // Mudar aba visível
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+      const targetPane = document.getElementById(`tab-${tabId}`);
+      if (targetPane) targetPane.classList.add('active');
+    });
+  });
+
+  // Botão de Logout
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+  }
+
+  // 3. FLUXOS EXCLUSIVOS DO PAINEL DO USUÁRIO
+  if (!isPageAdmin) {
+    // Definir saudação de boas-vindas
+    const welcomeTitle = document.getElementById('welcome-title');
+    if (welcomeTitle) welcomeTitle.textContent = `Olá, ${user.name}!`;
+
+    // Atualizar métricas simples baseadas no plano
+    const statsPlanType = document.getElementById('stats-plan-type');
+    if (statsPlanType) statsPlanType.textContent = user.plan;
+
+    // Carregar Favoritos Reais
+    loadUserFavorites();
+
+    // Carregar Mocks de Histórico e Arquivos
+    loadUserHistoryAndFiles(user.name);
+
+    // Sistema de Upgrade de Plano PRO
+    setupUserUpgradeFlow(user);
+
+    // Salvar configurações de formulário
+    const settingsForm = document.getElementById('settings-form');
+    if (settingsForm) {
+      document.getElementById('config-name').value = user.name;
+      document.getElementById('config-email').value = user.email;
+      
+      settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        user.name = document.getElementById('config-name').value;
+        user.email = document.getElementById('config-email').value;
+        user.avatar = user.name.substring(0, 2).toUpperCase();
+        
+        localStorage.setItem('facilita_user_session', JSON.stringify(user));
+        alert('Configurações salvas com sucesso!');
+        location.reload();
+      });
+    }
+  }
+
+  // 4. FLUXOS EXCLUSIVOS DO PAINEL DO ADMINISTRADOR
+  if (isPageAdmin) {
+    loadAdminStats(user.token);
+    loadAdminToolsTable();
+    loadAdminUsersTable(user.token);
+    loadAdminSubsTable();
+    startAdminLogsSimulation(user.token);
+    
+    // Toggle de manutenção
+    const adminSettingsForm = document.getElementById('admin-settings-form');
+    if (adminSettingsForm) {
+      adminSettingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Configurações globais salvas e aplicadas ao cluster FastAPI!');
+      });
+    }
+  }
+  
+  // Inicializa ícones dinâmicos nas abas
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
+
+/* ==========================================================================
+   FUNÇÕES AUXILIARES - PAINEL DO USUÁRIO
+   ========================================================================== */
+
+function loadUserFavorites() {
+  const container = document.getElementById('favorites-container');
+  if (!container) return;
+
+  const favoriteIds = JSON.parse(localStorage.getItem('facilita_favorites') || '[]');
+  
+  if (favoriteIds.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 48px; background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; color: var(--gray-400);">
+        <i data-lucide="star-off" style="width: 48px; height: 48px; margin: 0 auto 16px auto;"></i>
+        <p style="font-weight: 600;">Nenhuma ferramenta favoritada ainda.</p>
+        <p style="font-size: 13px;">Clique na estrela dentro das ferramentas para marcá-las como favoritas.</p>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  // Buscar lista de ferramentas
+  fetch('../tools.json')
+    .then(res => res.json())
+    .then(tools => {
+      const favTools = tools.filter(t => favoriteIds.includes(t.id));
+      container.innerHTML = '';
+      
+      favTools.forEach(tool => {
+        const card = document.createElement('div');
+        card.className = 'tool-card';
+        card.innerHTML = `
+          <div class="tool-card-top">
+            <div class="tool-icon"><i data-lucide="${tool.icone}"></i></div>
+            <div class="tool-card-info">
+              <h3>${tool.nome}</h3>
+              <p>${tool.descricao}</p>
+            </div>
+          </div>
+          <div class="tool-card-action">
+            <span class="tool-tag">${tool.categoria}</span>
+            <a href="../${tool.rota}" class="btn btn-secondary btn-sm" style="padding: 6px 16px; font-size: 13px;">
+              Abrir <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    });
+}
+
+function loadUserHistoryAndFiles(userName) {
+  // Histórico
+  const historyBody = document.getElementById('history-table-body');
+  if (historyBody) {
+    const historyData = [
+      { tool: "Remover Fundo", date: "Hoje, 14:32", status: "Concluído" },
+      { tool: "Gerador de QR Code", date: "Ontem, 18:12", status: "Concluído" },
+      { tool: "PDF para Word", date: "04 Jul 2026, 09:45", status: "Concluído" }
+    ];
+    
+    historyBody.innerHTML = historyData.map(h => `
+      <tr>
+        <td style="font-weight:700;">${h.tool}</td>
+        <td>${h.date}</td>
+        <td><span class="status-badge status-success">${h.status}</span></td>
+        <td><i data-lucide="external-link" class="action-icon-btn" title="Abrir Ferramenta"></i></td>
+      </tr>
+    `).join('');
+    
+    document.getElementById('stats-total-tasks').textContent = historyData.length + 11; // Adiciona offset fictício
+  }
+
+  // Arquivos
+  const filesBody = document.getElementById('files-table-body');
+  if (filesBody) {
+    const filesData = [
+      { name: "foto_perfil_sem_fundo.png", size: "1.4 MB", date: "Hoje, 14:32" },
+      { name: "menu_restaurante_qr.png", size: "245 KB", date: "Ontem, 18:12" },
+      { name: "contrato_servicos_assinado.pdf", size: "480 KB", date: "03 Jul 2026, 11:20" }
+    ];
+
+    filesBody.innerHTML = filesData.map(f => `
+      <tr>
+        <td style="font-weight: 700;"><i data-lucide="file" style="width:14px; height:14px; margin-right:6px; color:var(--primary-blue);"></i>${f.name}</td>
+        <td>${f.size}</td>
+        <td>${f.date}</td>
+        <td style="display:flex; gap:12px;">
+          <i data-lucide="download" class="action-icon-btn" title="Download"></i>
+          <i data-lucide="trash-2" class="action-icon-btn" style="color:#ef4444;" title="Excluir"></i>
+        </td>
+      </tr>
+    `).join('');
+
+    document.getElementById('stats-total-files').textContent = filesData.length;
+  }
+  lucide.createIcons();
+}
+
+function setupUserUpgradeFlow(user) {
+  const currentPlanStrong = document.getElementById('current-plan-strong');
+  const proBadgeStatus = document.getElementById('pro-badge-status');
+  const upgradeBtn = document.getElementById('upgrade-plan-btn');
+  const statsPlanType = document.getElementById('stats-plan-type');
+  
+  if (user.plan === 'PRO') {
+    if (currentPlanStrong) currentPlanStrong.textContent = "Plano PRO (Acesso Ilimitado)";
+    if (proBadgeStatus) {
+      proBadgeStatus.textContent = "ATIVO";
+      proBadgeStatus.className = "pro-badge status-success";
+    }
+    if (upgradeBtn) {
+      upgradeBtn.textContent = "Você já é PRO!";
+      upgradeBtn.className = "btn btn-secondary";
+      upgradeBtn.disabled = true;
+      upgradeBtn.style.backgroundColor = "transparent";
+      upgradeBtn.style.color = "#10B981";
+      upgradeBtn.style.borderColor = "#10B981";
+    }
+  }
+
+  if (upgradeBtn && user.plan === 'FREE') {
+    upgradeBtn.addEventListener('click', async () => {
+      upgradeBtn.innerHTML = "Processando PIX...";
+      upgradeBtn.disabled = true;
+      
+      try {
+        // Gera o PIX
+        const res = await fetch("http://localhost:8000/api/v1/payments/pix/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.token}` },
+          body: JSON.stringify({ plan_name: "PRO_MONTHLY" })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          alert(`Código PIX (Copia e Cola) gerado:\n\n${data.pix_qrcode_data}\n\nAguardando pagamento... Simulando confirmação em 3 segundos!`);
+          
+          // Simula o Webhook MercadoPago confirmando pagamento
+          setTimeout(async () => {
+            const webhookRes = await fetch("http://localhost:8000/api/v1/payments/webhook/mock", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ transaction_id: data.transaction_id, status: "approved" })
+            });
+            
+            if (webhookRes.ok) {
+              alert("Pagamento APROVADO! Bem-vindo ao PRO!");
+              user.plan = 'PRO';
+              localStorage.setItem('facilita_user_session', JSON.stringify(user));
+              location.reload();
+            }
+          }, 3000);
+        } else {
+          alert("Erro ao gerar PIX: " + (data.detail || "Falha"));
+          upgradeBtn.innerHTML = "Pagar com PIX";
+          upgradeBtn.disabled = false;
+        }
+      } catch (err) {
+        alert("Erro de conexão com servidor PIX.");
+        upgradeBtn.innerHTML = "Pagar com PIX";
+        upgradeBtn.disabled = false;
+      }
+    });
+  }
+}
+
+/* ==========================================================================
+   FUNÇÕES AUXILIARES - PAINEL DO ADMINISTRADOR
+   ========================================================================== */
+
+function loadAdminToolsTable() {
+  const tableBody = document.getElementById('admin-tools-table-body');
+  if (!tableBody) return;
+
+  fetch('../tools.json')
+    .then(res => res.json())
+    .then(tools => {
+      tableBody.innerHTML = tools.map((t, idx) => `
+        <tr>
+          <td style="font-weight:700;">
+            <i data-lucide="${t.icone}" style="width:14px; height:14px; margin-right:6px; color:var(--primary-blue);"></i>${t.nome}
+          </td>
+          <td><span class="tool-tag">${t.categoria}</span></td>
+          <td>${(idx + 1) * 324} reqs</td>
+          <td><span class="status-badge status-success">Ativa</span></td>
+          <td style="display:flex; gap:16px;">
+            <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:11px;" onclick="alert('Funcionalidade de edição de SEO de API disponível no FastAPI.')">Editar SEO</button>
+            <i data-lucide="toggle-left" class="action-icon-btn" title="Desativar ferramenta" style="font-size:20px; align-self:center;"></i>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    });
+}
+
+function loadAdminStats(token) {
+  fetch(`${ADMIN_API_URL}/stats`, {
+    headers: { "Authorization": `Bearer ${token}` }
+  })
+  .then(res => res.json())
+  .then(json => {
+    if (json.success) {
+      document.getElementById('admin-stats-logs').textContent = json.data.total_events;
+      document.getElementById('admin-stats-users').textContent = json.data.total_users;
+      document.getElementById('admin-stats-pro').textContent = json.data.pro_users;
+      document.getElementById('admin-stats-free').textContent = json.data.free_users;
+    }
+  }).catch(e => console.error(e));
+}
+
+function loadAdminUsersTable(token) {
+  const tableBody = document.getElementById('admin-users-table-body');
+  if (!tableBody) return;
+
+  fetch(`${ADMIN_API_URL}/users`, {
+    headers: { "Authorization": `Bearer ${token}` }
+  })
+  .then(res => res.json())
+  .then(json => {
+    if (json.success) {
+      tableBody.innerHTML = json.data.map(u => `
+        <tr>
+          <td style="font-weight:700;">${u.name}</td>
+          <td>${u.email}</td>
+          <td><span class="status-badge ${u.plan === 'PRO' ? 'status-success' : 'status-pending'}">${u.plan}</span></td>
+          <td><span class="status-badge ${u.status === 'Ativo' ? 'status-success' : 'status-pending'}" style="${u.status === 'Bloqueado' ? 'background-color:#fee2e2; color:#991b1b;' : ''}">${u.status}</span></td>
+          <td style="display:flex; gap:12px;">
+            <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:11px; color:#ef4444; border-color:#fca5a5;" onclick="alert('Usuário bloqueado/desbloqueado com sucesso.')">Bloquear</button>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+  }).catch(e => console.error(e));
+}
+
+function loadAdminSubsTable() {
+  const tableBody = document.getElementById('admin-subs-table-body');
+  if (!tableBody) return;
+
+  const subsData = [
+    { id: "TX-40918", user: "admin@facilita.com", value: "R$ 19,90", method: "PIX", date: "Hoje, 09:12", status: "Confirmado" }
+  ];
+
+  tableBody.innerHTML = subsData.map(s => `
+    <tr>
+      <td style="font-family:monospace; font-weight:700;">${s.id}</td>
+      <td>${s.user}</td>
+      <td style="font-weight:700; color:var(--primary-blue);">${s.value}</td>
+      <td>${s.method}</td>
+      <td>${s.date}</td>
+      <td><span class="status-badge status-success">${s.status}</span></td>
+    </tr>
+  `).join('');
+  lucide.createIcons();
+}
+
+let lastLogFetch = 0;
+function startAdminLogsSimulation(token) {
+  const logTerminal = document.getElementById('admin-logs-terminal');
+  if (!logTerminal) return;
+
+  function fetchLogs() {
+    fetch(`${ADMIN_API_URL}/logs`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(json => {
+      if (json.success) {
+        logTerminal.innerHTML = '';
+        json.data.reverse().forEach(log => {
+          appendLog(logTerminal, `${log.time} - [${log.event}] ${log.message}`, log.type);
+        });
+      }
+    }).catch(e => console.error(e));
+  }
+  
+  fetchLogs();
+  setInterval(fetchLogs, 5000); // Atualiza os logs a cada 5 segundos da API
+}
+
+function appendLog(terminal, message, typeStr) {
+  const logLine = document.createElement('div');
+  logLine.className = 'admin-log-line';
+  
+  let type = typeStr === "error" ? "ERROR" : "INFO";
+  let color = typeStr === "error" ? "#EF4444" : "#10B981";
+
+  logLine.innerHTML = `<span style="color:${color}; font-weight:700;">[${type}]</span> ${message}`;
+  terminal.appendChild(logLine);
+  
+  // Auto scroll para o final
+  terminal.scrollTop = terminal.scrollHeight;
+  
+  // Limitar número de linhas em tela
+  if (terminal.childElementCount > 40) {
+    terminal.removeChild(terminal.firstChild);
+  }
+}

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Básico -->
+  <title>Facilita | Resolva tarefas online em segundos</title>
+  <meta name="description" content="Resolva tarefas online em segundos. Converta arquivos, gere documentos, utilize IA e muito mais em uma única plataforma rápida e segura.">
+  <meta name="keywords" content="conversão de arquivos, PDF para Word, remover fundo, inteligência artificial, ferramentas online, produtividade">
+  <meta name="author" content="Facilita">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://facilita.com.br/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://facilita.com.br/">
+  <meta property="og:title" content="Facilita | Resolva tarefas online em segundos">
+  <meta property="og:description" content="Converta arquivos, gere documentos, utilize IA e mais em um só lugar. Rápido, seguro e gratuito para começar.">
+  <meta property="og:image" content="https://facilita.com.br/assets/og-cover.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Facilita | Resolva tarefas online em segundos">
+  <meta property="twitter:description" content="Converta arquivos, gere documentos, utilize IA e mais em um só lugar. Rápido, seguro e gratuito para começar.">
+
+  <!-- Google Fonts - Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Schema.org JSON-LD para a Página Inicial -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Facilita",
+    "url": "https://facilita.com.br/",
+    "description": "Plataforma multiferramentas online para produtividade, conversão de arquivos e inteligência artificial.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- HEADER / NAVBAR STICKY -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="index.html" class="logo-wrapper">
+        <div class="logo-icon">
+          <i data-lucide="zap"></i>
+        </div>
+        <span>Facilita</span>
+      </a>
+      
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#" class="nav-link active" data-i18n="nav-home">Home</a></li>
+          <li><a href="#catalogo" class="nav-link" data-i18n="nav-tools">Ferramentas</a></li>
+          <li><a href="#pro" class="nav-link" data-i18n="nav-pricing">Preços</a></li>
+        </ul>
+      </nav>
+      
+      <div class="header-actions">
+        <!-- Roteamento i18n -->
+        <div class="lang-selector-wrapper">
+          <select class="lang-select" aria-label="Seletor de idioma">
+            <option value="pt">🇧🇷 PT</option>
+            <option value="en">🇺🇸 EN</option>
+            <option value="es">🇪🇸 ES</option>
+          </select>
+        </div>
+        
+        <a href="auth/login.html" class="nav-link" data-i18n="nav-login">Login</a>
+        <a href="auth/login.html" class="btn btn-primary" data-i18n="nav-cta">Começar Agora</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION (100VH IMPACTO VISUAL) -->
+  <section class="hero">
+    <div class="container hero-container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="badge-speed">
+            <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+            <span data-i18n="hero-badge">⚡ Plataforma Ultra Rápida</span>
+          </div>
+          
+          <h1 class="hero-title" data-i18n="hero-title">Facilita seu dia.</h1>
+          
+          <p class="hero-subtitle" data-i18n="hero-subtitle">
+            Resolva tarefas online em segundos. Converta arquivos, gere documentos, utilize IA e muito mais em uma única plataforma.
+          </p>
+          
+          <!-- Barra de Pesquisa Centralizada -->
+          <div class="search-container">
+            <div class="search-wrapper">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" id="main-search-input" class="search-input" data-i18n-placeholder="hero-search-placeholder" placeholder="O que você precisa hoje?">
+            </div>
+          </div>
+          
+          <!-- Suggestion Chips -->
+          <div class="search-suggestions">
+            <span class="suggestion-label" data-i18n="hero-examples">Exemplos:</span>
+            <span class="chip" data-search="Converter PDF">Converter PDF</span>
+            <span class="chip" data-search="Remover Fundo">Remover Fundo</span>
+            <span class="chip" data-search="Criar Currículo">Criar Currículo</span>
+            <span class="chip" data-search="Gerar Contrato">Gerar Contrato</span>
+            <span class="chip" data-search="QR Code">QR Code</span>
+          </div>
+          
+          <!-- Counters -->
+          <div class="hero-counters">
+            <div class="counter-item">
+              <span class="counter-num" id="counter-tools-val">0</span>
+              <span class="counter-lbl" data-i18n="counter-tools">+150 ferramentas disponíveis</span>
+            </div>
+            <div class="counter-item">
+              <span class="counter-num" id="counter-tasks-val">0</span>
+              <span class="counter-lbl" data-i18n="counter-tasks">Mais de 50.000 tarefas realizadas</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Ilustração Moderna Lado Direito (Mockup SaaS Animado) -->
+        <div class="hero-illustration">
+          <div class="mockup-card floating-element">
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+              <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #EF4444;"></div>
+              <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #F59E0B;"></div>
+              <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #10B981;"></div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Linha de Status de upload mock -->
+              <div style="display: flex; align-items: center; justify-content: space-between; background: var(--light-gray); padding: 12px; border-radius: 12px; border: 1px solid var(--gray-200);">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <i data-lucide="image" style="color: var(--primary-blue); width: 16px; height: 16px;"></i>
+                  <span style="font-size: 11px; font-weight: 700;">foto-perfil.jpg</span>
+                </div>
+                <span style="font-size: 10px; font-weight: 700; color: #10B981;">Concluído</span>
+              </div>
+              
+              <!-- Barra de processamento mock -->
+              <div style="padding: 12px; background: var(--light-gray); border-radius: 12px; border: 1px solid var(--gray-200); position: relative;">
+                <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; margin-bottom: 6px;">
+                  <span>IA: Removendo Fundo...</span>
+                  <span>98%</span>
+                </div>
+                <div style="background: var(--gray-200); height: 6px; border-radius: 3px; overflow: hidden;">
+                  <div style="background: var(--primary-blue); width: 98%; height: 100%;"></div>
+                </div>
+              </div>
+              
+              <!-- Dashboard de Ferramentas Ativas -->
+              <div class="floating-element-delay" style="display: flex; gap: 8px; justify-content: space-between; margin-top: 8px;">
+                <div style="flex: 1; padding: 10px; background: #EFF6FF; border: 1px solid rgba(37, 99, 235, 0.1); border-radius: var(--radius-sm); text-align: center;">
+                  <i data-lucide="file-text" style="color: var(--primary-blue); width: 18px; height: 18px; margin: 0 auto 4px auto;"></i>
+                  <div style="font-size: 9px; font-weight: 700;">Doc Converter</div>
+                </div>
+                <div style="flex: 1; padding: 10px; background: #F8FAFC; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); text-align: center;">
+                  <i data-lucide="qr-code" style="color: var(--dark-text); width: 18px; height: 18px; margin: 0 auto 4px auto;"></i>
+                  <div style="font-size: 9px; font-weight: 700;">QR Generator</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO COMO FUNCIONA -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="how-title">Como Funciona</h2>
+        <p data-i18n="popular-subtitle">Três passos simples para acelerar suas tarefas diárias de forma totalmente gratuita.</p>
+      </div>
+      
+      <div class="steps-grid">
+        <!-- Passo 1 -->
+        <div class="step-card">
+          <span class="step-icon">1️⃣</span>
+          <h3 data-i18n="how-step-1-title">1. Escolha uma ferramenta</h3>
+          <p data-i18n="how-step-1-desc">Navegue pelas categorias ou busque diretamente o que você precisa.</p>
+        </div>
+        <!-- Passo 2 -->
+        <div class="step-card">
+          <span class="step-icon">2️⃣</span>
+          <h3 data-i18n="how-step-2-title">2. Upload ou Preenchimento</h3>
+          <p data-i18n="how-step-2-desc">Arraste seus arquivos ou insira as informações necessárias na tela.</p>
+        </div>
+        <!-- Passo 3 -->
+        <div class="step-card">
+          <span class="step-icon">3️⃣</span>
+          <h3 data-i18n="how-step-3-title">3. Baixe em segundos</h3>
+          <p data-i18n="how-step-3-desc">Nossa plataforma processa instantaneamente. Baixe seu resultado final.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO CATEGORIAS -->
+  <section class="categories" id="catalogo">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="cat-title">Explore por Categorias</h2>
+        <p data-i18n="popular-subtitle">Encontre a solução ideal dividida de forma limpa e organizada.</p>
+      </div>
+      
+      <div class="categories-grid" id="categories-container">
+        <!-- Categoria: PDF -->
+        <div class="category-card" data-category="PDF">
+          <div class="category-icon"><i data-lucide="file-text"></i></div>
+          <h3>📄 PDF</h3>
+          <p data-i18n="cat-pdf-desc">Junte, divida, converta e comprima seus documentos PDF.</p>
+        </div>
+        <!-- Categoria: Imagens -->
+        <div class="category-card" data-category="Imagens">
+          <div class="category-icon"><i data-lucide="image"></i></div>
+          <h3>🖼️ Imagens</h3>
+          <p data-i18n="cat-imagens-desc">Remova fundos, converta formatos e otimize imagens.</p>
+        </div>
+        <!-- Categoria: IA -->
+        <div class="category-card" data-category="IA">
+          <div class="category-icon"><i data-lucide="sparkles"></i></div>
+          <h3>🤖 IA</h3>
+          <p data-i18n="cat-ia-desc">Resumos inteligentes, geradores de conteúdo e assistentes.</p>
+        </div>
+        <!-- Categoria: Documentos -->
+        <div class="category-card" data-category="Documentos">
+          <div class="category-icon"><i data-lucide="file-signature"></i></div>
+          <h3>📋 Documentos</h3>
+          <p data-i18n="cat-documentos-desc">Contratos, currículos e declarações prontas.</p>
+        </div>
+        <!-- Categoria: Calculadoras -->
+        <div class="category-card" data-category="Calculadoras">
+          <div class="category-icon"><i data-lucide="calculator"></i></div>
+          <h3>🧮 Calculadoras</h3>
+          <p data-i18n="cat-calculadoras-desc">Financeiras, matemáticas e conversores de medidas.</p>
+        </div>
+        <!-- Categoria: Trabalho -->
+        <div class="category-card" data-category="Trabalho">
+          <div class="category-icon"><i data-lucide="briefcase"></i></div>
+          <h3>💼 Trabalho</h3>
+          <p data-i18n="cat-trabalho-desc">Planilhas, geradores de dados e utilitários corporativos.</p>
+        </div>
+        <!-- Categoria: Estudos -->
+        <div class="category-card" data-category="Estudos">
+          <div class="category-icon"><i data-lucide="graduation-cap"></i></div>
+          <h3>🎓 Estudos</h3>
+          <p data-i18n="cat-estudos-desc">Fichamentos, cronogramas e conversores acadêmicos.</p>
+        </div>
+        <!-- Categoria: Utilidades -->
+        <div class="category-card" data-category="Utilidades">
+          <div class="category-icon"><i data-lucide="settings"></i></div>
+          <h3>⚙️ Utilidades</h3>
+          <p data-i18n="cat-utilidades-desc">Geradores de QR Code, senhas e encurtadores de links.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO FERRAMENTAS POPULARES -->
+  <section class="tools-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="popular-title">Ferramentas Populares</h2>
+        <p data-i18n="popular-subtitle">As soluções mais utilizadas pelos nossos usuários para agilizar o dia a dia.</p>
+      </div>
+      
+      <!-- Grid de Ferramentas Carregado Dinamicamente -->
+      <div class="tools-grid" id="tools-container">
+        <!-- O JS de app.js injetará os cards aqui a partir do tools.json -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO BENEFÍCIOS -->
+  <section class="benefits">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="benefits-title">Por que usar o Facilita?</h2>
+        <p data-i18n="popular-subtitle">Construímos nossa tecnologia pensando na privacidade, velocidade e eficiência.</p>
+      </div>
+      
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon-wrapper"><i data-lucide="zap" style="width: 32px; height: 32px;"></i></div>
+          <h3 data-i18n="benefit-speed-title">Muito rápido</h3>
+          <p data-i18n="benefit-speed-desc">Processamento de arquivos em segundos graças à nossa infraestrutura de alta velocidade.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <div class="benefit-icon-wrapper"><i data-lucide="shield-check" style="width: 32px; height: 32px;"></i></div>
+          <h3 data-i18n="benefit-sec-title">Seguro</h3>
+          <p data-i18n="benefit-sec-desc">Seus arquivos são criptografados de ponta a ponta e excluídos dos nossos servidores após 2 horas.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <div class="benefit-icon-wrapper"><i data-lucide="sparkles" style="width: 32px; height: 32px;"></i></div>
+          <h3 data-i18n="benefit-smart-title">Inteligente</h3>
+          <p data-i18n="benefit-smart-desc">Integração direta com modelos de Inteligência Artificial líderes para resultados precisos.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <div class="benefit-icon-wrapper"><i data-lucide="gift" style="width: 32px; height: 32px;"></i></div>
+          <h3 data-i18n="benefit-free-title">Gratuito para começar</h3>
+          <p data-i18n="benefit-free-desc">Use dezenas de ferramentas gratuitamente. Assine o PRO apenas se precisar de mais limites.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANO PRO -->
+  <section class="pricing" id="pro">
+    <div class="container">
+      <div class="pricing-card-wrapper">
+        <div class="pricing-card">
+          <div class="pricing-info">
+            <h3 data-i18n="pro-title">
+              Facilita PRO 
+              <span class="pro-badge">PRO</span>
+            </h3>
+            <p data-i18n="pro-subtitle">
+              Tenha acesso ilimitado a todas as ferramentas, recursos com IA, processamento mais rápido e novas funcionalidades.
+            </p>
+          </div>
+          <div class="pricing-action">
+            <span class="price-value" data-i18n="pro-price">R$ 19,90/mês</span>
+            <span class="price-period" data-i18n="benefit-free-title">Gratuito para começar</span>
+            <a href="auth/login.html" class="btn btn-primary" data-i18n="pro-btn">Assinar PRO</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRE-FOOTER CTA (GRADIENT AZUL) -->
+  <section class="pre-footer-cta">
+    <div class="container cta-container">
+      <h2 data-i18n="prefooter-title">Pronto para facilitar seu dia?</h2>
+      <p data-i18n="prefooter-subtitle">Comece gratuitamente agora e sinta a diferença na sua produtividade.</p>
+      <a href="auth/login.html" class="btn btn-white btn-lg" data-i18n="nav-cta">Começar Agora</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>
+            <div class="logo-icon" style="display:inline-flex; width:22px; height:22px; border-radius: 5px;">
+              <i data-lucide="zap" style="width: 12px; height:12px;"></i>
+            </div>
+            <span>Facilita</span>
+          </h3>
+          <p data-i18n="footer-desc">Facilitando sua rotina digital com ferramentas seguras e instantâneas.</p>
+        </div>
+        
+        <div class="footer-links-group">
+          <h4 data-i18n="footer-links-title">Links Úteis</h4>
+          <ul class="footer-links-list">
+            <li><a href="#" data-i18n="footer-about">Sobre Nós</a></li>
+            <li><a href="#" data-i18n="footer-contact">Contato</a></li>
+            <li><a href="privacidade.html" data-i18n="footer-privacy">Política de Privacidade</a></li>
+            <li><a href="termos.html" data-i18n="footer-terms">Termos de Uso</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p class="footer-copy-text" data-i18n="footer-copy">© 2026 Facilita. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Scripts do App -->
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

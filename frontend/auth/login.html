@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Facilita</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="../index.html" class="auth-logo">
+          <div class="logo-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+            <i data-lucide="zap"></i>
+          </div>
+          Facilita
+        </a>
+        <h2>Bem-vindo de volta</h2>
+        <p>Faça login para continuar</p>
+      </div>
+      
+      <form action="../dashboard/index.html" method="GET">
+        <div class="auth-form-group">
+          <label class="auth-label" for="email">Email</label>
+          <div class="auth-input-wrapper">
+            <input type="email" id="email" class="auth-input" placeholder="seu@email.com" required>
+          </div>
+        </div>
+        
+        <div class="auth-form-group">
+          <div style="display: flex; justify-content: space-between;">
+            <label class="auth-label" for="password">Senha</label>
+            <a href="#" style="font-size: 13px; color: var(--primary-blue); font-weight: 500;">Esqueceu a senha?</a>
+          </div>
+          <div class="auth-input-wrapper">
+            <input type="password" id="password" class="auth-input" placeholder="••••••••" required>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary auth-btn-submit">Entrar na plataforma</button>
+      </form>
+      
+      <div class="auth-divider">OU CONTINUAR COM</div>
+      
+      <button class="auth-btn-google">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
+        Google
+      </button>
+      
+      <div class="auth-footer">
+        Ainda não tem uma conta? <a href="cadastro.html">Criar conta</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

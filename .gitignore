@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+.env.*
+
+# Storage/Uploads
+backend/app/storage/uploads/*
+backend/app/storage/outputs/*
+backend/app/storage/temp/*
+!*/.gitkeep
+
+# Databases
+# facilta.db (Ignorado por padrão, pois o banco de dados de produção é gerenciado online)
+*.db
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Dinâmico (Preenchido via JavaScript baseando-se no tools.json) -->
+  <title id="seo-title">Carregando ferramenta | Facilita</title>
+  <meta name="description" id="seo-description" content="Carregando ferramenta na plataforma Facilita.">
+  
+  <!-- Open Graph / Meta Compartilhamento Dinâmico -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" id="og-title" content="Ferramenta Online | Facilita">
+  <meta property="og:description" id="og-description" content="Resolva suas tarefas digitais em segundos.">
+  <meta property="og:image" content="https://facilita.com.br/assets/og-cover.png">
+
+  <!-- Google Fonts - Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tool.css">
+  
+  <!-- Schema.org JSON-LD Dinâmico (Injetado via JS) -->
+  <script type="application/ld+json" id="seo-schema"></script>
+</head>
+<body class="tool-page">
+
+  <!-- HEADER / NAVBAR STICKY -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="../index.html" class="logo-wrapper">
+        <div class="logo-icon">
+          <i data-lucide="zap"></i>
+        </div>
+        <span>Facilita</span>
+      </a>
+      
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html" class="nav-link" data-i18n="nav-home">Home</a></li>
+          <li><a href="../index.html#catalogo" class="nav-link" data-i18n="nav-tools">Ferramentas</a></li>
+          <li><a href="../index.html#pro" class="nav-link" data-i18n="nav-pricing">Preços</a></li>
+        </ul>
+      </nav>
+      
+      <div class="header-actions">
+        <!-- Roteamento i18n -->
+        <div class="lang-selector-wrapper">
+          <select class="lang-select" aria-label="Seletor de idioma">
+            <option value="pt">🇧🇷 PT</option>
+            <option value="en">🇺🇸 EN</option>
+            <option value="es">🇪🇸 ES</option>
+          </select>
+        </div>
+        
+        <a href="../auth/login.html" class="nav-link" data-i18n="nav-login">Login</a>
+        <a href="../auth/login.html" class="btn btn-primary" data-i18n="nav-cta">Começar Agora</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTAINER DE RENDERIZAÇÃO DA FERRAMENTA -->
+  <main class="tool-layout-container">
+    
+    <!-- Link de Retorno -->
+    <a href="../index.html#catalogo" class="back-link">
+      <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> 
+      <span data-i18n="nav-tools">Voltar para Ferramentas</span>
+    </a>
+    
+    <!-- Cabeçalho da Ferramenta -->
+    <div class="tool-header-block">
+      <div class="tool-header-info">
+        <h1 id="tool-title-display">
+          <span id="tool-name-text">Nome da Ferramenta</span>
+          <span class="tool-tag" id="tool-category-badge" style="font-size: 12px; margin-left: 8px;">Categoria</span>
+        </h1>
+        <p id="tool-desc-text">Descrição da ferramenta sendo carregada...</p>
+      </div>
+      
+      <!-- Botão Favoritos -->
+      <button class="tool-favorite-btn" id="favorite-toggle-btn" title="Favoritar Ferramenta" aria-label="Favoritar Ferramenta">
+        <i data-lucide="star"></i>
+      </button>
+    </div>
+    
+    <!-- CONTEÚDO INTERATIVO DA FERRAMENTA (INJETADO VIA JS) -->
+    <div class="tool-workspace" id="tool-workspace-container">
+      <div style="text-align: center; padding: 48px; color: var(--gray-400);">
+        <div class="dropzone-icon"><i data-lucide="loader" class="floating-element" style="animation-duration: 2s;"></i></div>
+        <p>Carregando interface interativa da ferramenta...</p>
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" style="margin-top: auto;">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <p class="footer-copy-text" data-i18n="footer-copy">© 2026 Facilita. Todos os direitos reservados.</p>
+        <ul class="footer-links-list" style="gap: 16px;">
+          <li><a href="#" data-i18n="footer-privacy">Política de Privacidade</a></li>
+          <li><a href="#" data-i18n="footer-terms">Termos de Uso</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Scripts -->
+  <script src="../js/i18n.js"></script>
+  <script src="../js/tool.js?v=2"></script>
+</body>
+</html>

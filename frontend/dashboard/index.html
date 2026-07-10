@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Facilita</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .pix-btn {
+      background-color: #32BCAD;
+      color: white;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      padding: 12px 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(50, 188, 173, 0.2);
+    }
+    .pix-btn:hover {
+      background-color: #279A8D;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a href="../index.html" class="sidebar-logo">
+          <div class="logo-icon" style="width: 28px; height: 28px; border-radius: 8px;">
+            <i data-lucide="zap"></i>
+          </div>
+          <span>Facilita</span>
+        </a>
+        
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#" class="sidebar-item-link active" onclick="switchTab('resumo')">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Resumo</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-item-link" onclick="switchTab('historico')">
+              <i data-lucide="history"></i>
+              <span>Histórico</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar-item-link" onclick="switchTab('assinatura')">
+              <i data-lucide="credit-card"></i>
+              <span>Minha Assinatura</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-user">
+        <div class="sidebar-user-info">
+          <div class="sidebar-avatar">T</div>
+          <div class="sidebar-user-details">
+            <h5>Thiago</h5>
+            <span>Plano Gratuito</span>
+          </div>
+        </div>
+        <a href="../auth/login.html" class="btn-logout" aria-label="Sair">
+          <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- ABA: RESUMO -->
+      <div id="tab-resumo" class="tab-pane active">
+        <div class="content-header">
+          <div class="content-header-title">
+            <h1>Olá, Thiago 👋</h1>
+            <p>Acompanhe seu consumo e suas conversões recentes.</p>
+          </div>
+          <button class="btn btn-primary" onclick="window.location.href='../index.html#catalogo'">
+            <i data-lucide="plus"></i> Nova Tarefa
+          </button>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-card">
+            <div class="dashboard-card-header">
+              <span class="dashboard-card-title">Arquivos Convertidos</span>
+              <i data-lucide="file-check-2" style="color: var(--primary-blue);"></i>
+            </div>
+            <div class="dashboard-card-value">12</div>
+            <div class="dashboard-card-desc">Este mês</div>
+          </div>
+          
+          <div class="dashboard-card">
+            <div class="dashboard-card-header">
+              <span class="dashboard-card-title">Tempo Economizado</span>
+              <i data-lucide="clock" style="color: #10B981;"></i>
+            </div>
+            <div class="dashboard-card-value">2h 15m</div>
+            <div class="dashboard-card-desc">Estimativa Facilita</div>
+          </div>
+          
+          <div class="dashboard-card">
+            <div class="dashboard-card-header">
+              <span class="dashboard-card-title">Status da Conta</span>
+              <i data-lucide="shield" style="color: #F59E0B;"></i>
+            </div>
+            <div class="dashboard-card-value" style="font-size: 24px; color: #F59E0B;">Gratuito</div>
+            <div class="dashboard-card-desc">Limite: 5 arquivos/dia</div>
+          </div>
+        </div>
+
+        <h3>Conversões Recentes</h3>
+        <br>
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ferramenta</th>
+                <th>Arquivo</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PDF para Word</td>
+                <td>relatorio-mensal.pdf</td>
+                <td>Hoje, 10:25</td>
+                <td><span class="status-badge status-success">Concluído</span></td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+              <tr>
+                <td>Remover Fundo</td>
+                <td>foto-perfil.jpg</td>
+                <td>Ontem, 15:30</td>
+                <td><span class="status-badge status-success">Concluído</span></td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+              <tr>
+                <td>Comprimir PDF</td>
+                <td>apresentacao-v2.pdf</td>
+                <td>05 Jul 2026</td>
+                <td><span class="status-badge status-success">Concluído</span></td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABA: HISTÓRICO -->
+      <div id="tab-historico" class="tab-pane">
+        <div class="content-header">
+          <div class="content-header-title">
+            <h1>Histórico Completo</h1>
+            <p>Todos os seus arquivos processados nos últimos 30 dias.</p>
+          </div>
+        </div>
+        
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ferramenta</th>
+                <th>Arquivo</th>
+                <th>Data</th>
+                <th>Tamanho</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PDF para Word</td>
+                <td>relatorio-mensal.pdf</td>
+                <td>07 Jul 2026</td>
+                <td>2.4 MB</td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+              <tr>
+                <td>Remover Fundo</td>
+                <td>foto-perfil.jpg</td>
+                <td>06 Jul 2026</td>
+                <td>1.1 MB</td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+              <tr>
+                <td>Comprimir PDF</td>
+                <td>apresentacao-v2.pdf</td>
+                <td>05 Jul 2026</td>
+                <td>5.6 MB</td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+              <tr>
+                <td>Juntar PDF</td>
+                <td>docs-finais.pdf</td>
+                <td>02 Jul 2026</td>
+                <td>8.2 MB</td>
+                <td><i data-lucide="download" class="action-icon-btn"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABA: ASSINATURA -->
+      <div id="tab-assinatura" class="tab-pane">
+        <div class="content-header">
+          <div class="content-header-title">
+            <h1>Minha Assinatura</h1>
+            <p>Gerencie seu plano e métodos de pagamento.</p>
+          </div>
+        </div>
+
+        <div class="form-card" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+            <div>
+              <h3 style="margin-bottom: 8px;">Plano Atual: Gratuito</h3>
+              <p style="color: var(--gray-500); font-size: 14px;">Você está usando o plano gratuito com limites diários.</p>
+            </div>
+            <span style="font-size: 24px; font-weight: 800;">R$ 0,00</span>
+          </div>
+          
+          <div style="background-color: var(--light-gray); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 600;">
+              <span>Uso diário</span>
+              <span>3 / 5 arquivos</span>
+            </div>
+            <div style="background: var(--gray-200); height: 8px; border-radius: 4px; overflow: hidden;">
+              <div style="background: var(--primary-blue); width: 60%; height: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card" style="border: 2px solid var(--primary-blue);">
+          <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <div class="logo-icon" style="width: 32px; height: 32px; border-radius: 8px;"><i data-lucide="zap"></i></div>
+            <div>
+              <h3 style="margin-bottom: 4px;">Faça Upgrade para o PRO</h3>
+              <p style="color: var(--gray-500); font-size: 14px;">Acesso ilimitado, maior velocidade e recursos de IA.</p>
+            </div>
+          </div>
+          
+          <ul style="list-style: none; margin-bottom: 24px;">
+            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; color: var(--dark-text);">
+              <i data-lucide="check" style="color: #10B981; width: 16px; height: 16px;"></i> Sem limite diário de arquivos
+            </li>
+            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; color: var(--dark-text);">
+              <i data-lucide="check" style="color: #10B981; width: 16px; height: 16px;"></i> Limite de tamanho de arquivo maior (500MB)
+            </li>
+            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; color: var(--dark-text);">
+              <i data-lucide="check" style="color: #10B981; width: 16px; height: 16px;"></i> Acesso a todas as ferramentas de IA
+            </li>
+          </ul>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--gray-200); padding-top: 24px;">
+            <div>
+              <span style="font-size: 24px; font-weight: 800; display: block;">R$ 19,90<span style="font-size: 14px; font-weight: 500; color: var(--gray-500);"> / mês</span></span>
+            </div>
+            
+            <!-- Botão de PIX -->
+            <button type="button" class="pix-btn" id="upgrade-plan-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.61538 12L12 17.3846L17.3846 12L12 6.61538L6.61538 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 2L2 12L12 22L22 12L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Pagar com PIX
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item-link').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>

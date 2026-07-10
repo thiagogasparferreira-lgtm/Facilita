@@ -1,0 +1,72 @@
+[
+  {
+    "id": "pdf-word",
+    "nome": "PDF para Word",
+    "categoria": "PDF",
+    "icone": "file-text",
+    "descricao": "Converta seus arquivos PDF para documentos Word editáveis com precisão.",
+    "rota": "ferramentas/index.html?tool=pdf-word",
+    "popular": true,
+    "seo": { "title": "Converter PDF para Word | Facilita", "description": "Conversão rápida PDF-Word.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "qr-code",
+    "nome": "Gerador de QR Code",
+    "categoria": "Utilidades",
+    "icone": "qr-code",
+    "descricao": "Crie QR Codes personalizados para links ou PIX com opções de cores.",
+    "rota": "ferramentas/index.html?tool=qr-code",
+    "popular": true,
+    "seo": { "title": "Gerador de QR Code | Facilita", "description": "Gere QRCode rápido e grátis.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "password-gen",
+    "nome": "Gerador de Senhas",
+    "categoria": "Segurança",
+    "icone": "key-round",
+    "descricao": "Crie senhas criptografadas inquebráveis contendo letras, números e símbolos.",
+    "rota": "ferramentas/index.html?tool=password-gen",
+    "popular": true,
+    "seo": { "title": "Gerador de Senhas Seguras | Facilita", "description": "Crie senhas fortes instantaneamente.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "image-compress",
+    "nome": "Comprimir Imagem",
+    "categoria": "Imagens",
+    "icone": "minimize-2",
+    "descricao": "Reduza o peso das suas imagens (JPG/PNG) em até 80% sem perder a qualidade.",
+    "rota": "ferramentas/index.html?tool=image-compress",
+    "popular": true,
+    "seo": { "title": "Comprimir Imagens Grátis | Facilita", "description": "Diminua o tamanho de fotos mantendo a qualidade.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "img-to-pdf",
+    "nome": "Imagem para PDF",
+    "categoria": "Imagens",
+    "icone": "images",
+    "descricao": "Transforme rapidamente fotos de documentos (JPG/PNG) para o formato PDF.",
+    "rota": "ferramentas/index.html?tool=img-to-pdf",
+    "popular": false,
+    "seo": { "title": "Imagem para PDF | Facilita", "description": "Converta JPG/PNG para PDF seguro.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "pdf-splitter",
+    "nome": "Extrair Página de PDF",
+    "categoria": "PDF",
+    "icone": "scissors",
+    "descricao": "Separe uma página específica de um PDF grande e faça o download.",
+    "rota": "ferramentas/index.html?tool=pdf-splitter",
+    "popular": false,
+    "seo": { "title": "Dividir PDF | Facilita", "description": "Extrair páginas de arquivos PDF.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "watermark",
+    "nome": "Marca D'Água",
+    "categoria": "Imagens",
+    "icone": "copyright",
+    "descricao": "Proteja suas fotos estampando textos como 'Confidencial' direto na imagem.",
+    "rota": "ferramentas/index.html?tool=watermark",
+    "popular": false,
+    "seo": { "title": "Adicionar Marca d'Água | Facilita", "description": "Coloque marcas d'água em imagens.", "schemaType": "WebApplication" }
+  }
+]
