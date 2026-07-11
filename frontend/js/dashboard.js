@@ -324,15 +324,24 @@ function loadAdminStats(token) {
   fetch(`${ADMIN_API_URL}/stats`, {
     headers: { "Authorization": `Bearer ${token}` }
   })
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error(`Erro ${res.status} ao carregar estatísticas`);
+    return res.json();
+  })
   .then(json => {
-    if (json.success) {
-      document.getElementById('admin-stats-logs').textContent = json.data.total_events;
-      document.getElementById('admin-stats-users').textContent = json.data.total_users;
-      document.getElementById('admin-stats-pro').textContent = json.data.pro_users;
-      document.getElementById('admin-stats-free').textContent = json.data.free_users;
-    }
-  }).catch(e => console.error(e));
+    // API retorna dados diretamente (sem wrapper success)
+    const el = (id) => document.getElementById(id);
+    if (el('admin-stats-users')) el('admin-stats-users').textContent = json.total_users ?? '--';
+    if (el('admin-stats-pro')) el('admin-stats-pro').textContent = json.total_pro_users ?? '--';
+    if (el('admin-stats-free')) el('admin-stats-free').textContent = (json.total_users - json.total_pro_users) ?? '--';
+    if (el('admin-stats-logs')) el('admin-stats-logs').textContent = json.total_conversions ?? '--';
+  })
+  .catch(e => {
+    console.error('Admin stats error:', e);
+    const el = document.getElementById('admin-stats-users');
+    if (el) el.closest('.admin-card')?.insertAdjacentHTML('beforeend',
+      `<p style="color:#ef4444;font-size:12px;margin-top:8px;">⚠️ ${e.message}</p>`);
+  });
 }
 
 function loadAdminUsersTable(token) {
@@ -342,44 +351,74 @@ function loadAdminUsersTable(token) {
   fetch(`${ADMIN_API_URL}/users`, {
     headers: { "Authorization": `Bearer ${token}` }
   })
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error(`Erro ${res.status} ao carregar usuários`);
+    return res.json();
+  })
   .then(json => {
-    if (json.success) {
-      tableBody.innerHTML = json.data.map(u => `
-        <tr>
-          <td style="font-weight:700;">${u.name}</td>
-          <td>${u.email}</td>
-          <td><span class="status-badge ${u.plan === 'PRO' ? 'status-success' : 'status-pending'}">${u.plan}</span></td>
-          <td><span class="status-badge ${u.status === 'Ativo' ? 'status-success' : 'status-pending'}" style="${u.status === 'Bloqueado' ? 'background-color:#fee2e2; color:#991b1b;' : ''}">${u.status}</span></td>
-          <td style="display:flex; gap:12px;">
-            <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:11px; color:#ef4444; border-color:#fca5a5;" onclick="alert('Usuário bloqueado/desbloqueado com sucesso.')">Bloquear</button>
-          </td>
-        </tr>
-      `).join('');
-      lucide.createIcons();
+    // API retorna { total, users: [...] }
+    const users = json.users || [];
+    if (users.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;">Nenhum usuário encontrado.</td></tr>';
+      return;
     }
-  }).catch(e => console.error(e));
+    tableBody.innerHTML = users.map(u => `
+      <tr>
+        <td style="font-weight:700;">${u.name || '--'}</td>
+        <td>${u.email}</td>
+        <td><span class="status-badge ${u.is_pro ? 'status-success' : 'status-pending'}">${u.is_pro ? 'PRO' : 'FREE'}</span></td>
+        <td><span class="status-badge status-success">Ativo</span></td>
+        <td style="display:flex; gap:12px;">
+          <button class="btn btn-secondary btn-sm" style="padding:4px 8px; font-size:11px; color:#ef4444; border-color:#fca5a5;" onclick="alert('Funcionalidade de bloqueio disponível em breve.')">Bloquear</button>
+        </td>
+      </tr>
+    `).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  })
+  .catch(e => {
+    console.error('Admin users error:', e);
+    tableBody.innerHTML = `<tr><td colspan="5" style="color:#ef4444;text-align:center;">⚠️ ${e.message}</td></tr>`;
+  });
 }
 
-function loadAdminSubsTable() {
+function loadAdminSubsTable(token) {
+  // Usa o endpoint de logs para buscar conversões recentes como histórico de atividade
   const tableBody = document.getElementById('admin-subs-table-body');
   if (!tableBody) return;
 
-  const subsData = [
-    { id: "TX-40918", user: "admin@facilita.com", value: "R$ 19,90", method: "PIX", date: "Hoje, 09:12", status: "Confirmado" }
-  ];
+  // Mostra estado de carregamento
+  tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;">Carregando...</td></tr>';
 
-  tableBody.innerHTML = subsData.map(s => `
-    <tr>
-      <td style="font-family:monospace; font-weight:700;">${s.id}</td>
-      <td>${s.user}</td>
-      <td style="font-weight:700; color:var(--primary-blue);">${s.value}</td>
-      <td>${s.method}</td>
-      <td>${s.date}</td>
-      <td><span class="status-badge status-success">${s.status}</span></td>
-    </tr>
-  `).join('');
-  lucide.createIcons();
+  fetch(`${ADMIN_API_URL}/logs`, {
+    headers: { "Authorization": `Bearer ${token}` }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error(`Erro ${res.status} ao carregar histórico`);
+    return res.json();
+  })
+  .then(json => {
+    // Usa as conversões recentes como proxy do histórico de transações
+    const conversions = (json.conversions || []).slice(0, 10);
+    if (conversions.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;">Nenhuma atividade registrada.</td></tr>';
+      return;
+    }
+    tableBody.innerHTML = conversions.map(c => `
+      <tr>
+        <td style="font-family:monospace; font-weight:700;">#${c.id}</td>
+        <td>${c.tool_id || '--'}</td>
+        <td style="font-weight:700; color:var(--primary-blue);">--</td>
+        <td>--</td>
+        <td style="font-size:12px;">${c.created_at ? c.created_at.substring(0,16).replace('T',' ') : '--'}</td>
+        <td><span class="status-badge ${c.status === 'success' ? 'status-success' : 'status-pending'}">${c.status || '--'}</span></td>
+      </tr>
+    `).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  })
+  .catch(e => {
+    console.error('Admin subs error:', e);
+    tableBody.innerHTML = `<tr><td colspan="6" style="color:#ef4444;text-align:center;">⚠️ ${e.message}</td></tr>`;
+  });
 }
 
 let lastLogFetch = 0;
@@ -391,19 +430,45 @@ function startAdminLogsSimulation(token) {
     fetch(`${ADMIN_API_URL}/logs`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+      return res.json();
+    })
     .then(json => {
-      if (json.success) {
-        logTerminal.innerHTML = '';
-        json.data.reverse().forEach(log => {
-          appendLog(logTerminal, `${log.time} - [${log.event}] ${log.message}`, log.type);
-        });
+      // API retorna { conversions: [...], system_logs: [...] }
+      logTerminal.innerHTML = '';
+      const sysLogs = (json.system_logs || []).slice(0, 20);
+      const convLogs = (json.conversions || []).slice(0, 10);
+
+      if (sysLogs.length === 0 && convLogs.length === 0) {
+        appendLog(logTerminal, 'Nenhum log registrado ainda.', 'info');
+        return;
       }
-    }).catch(e => console.error(e));
+
+      // Exibe logs de sistema
+      sysLogs.forEach(log => {
+        appendLog(logTerminal,
+          `${(log.created_at || '').substring(0,19).replace('T',' ')} [${log.event_type}] ${log.description}`,
+          log.event_type === 'error' ? 'error' : 'info'
+        );
+      });
+
+      // Exibe conversões como logs de atividade
+      convLogs.forEach(c => {
+        appendLog(logTerminal,
+          `${(c.created_at || '').substring(0,19).replace('T',' ')} [TOOL] ${c.tool_id} → ${c.status} (${c.original_filename || 'arquivo'})`,
+          c.status === 'failed' ? 'error' : 'info'
+        );
+      });
+    })
+    .catch(e => {
+      console.error('Logs fetch error:', e);
+      logTerminal.innerHTML = `<div style="color:#ef4444;">⚠️ Falha ao carregar logs: ${e.message}</div>`;
+    });
   }
   
   fetchLogs();
-  setInterval(fetchLogs, 5000); // Atualiza os logs a cada 5 segundos da API
+  setInterval(fetchLogs, 10000); // Atualiza a cada 10 segundos
 }
 
 function appendLog(terminal, message, typeStr) {
