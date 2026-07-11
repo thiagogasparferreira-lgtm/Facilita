@@ -2,27 +2,35 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.db.database import get_db
-from app.db.models import User, Conversion, Payment, Subscription
+from app.db.models import User, Conversion, Payment, Subscription, SystemLog
+from datetime import datetime
 
 router = APIRouter()
 
+def require_admin(request: Request, db: Session = Depends(get_db)):
+    """Dependência que garante que o usuário autenticado é admin."""
+    if not request.state.is_authenticated:
+        raise HTTPException(status_code=401, detail="Autenticação necessária.")
+    if not request.state.is_admin:
+        raise HTTPException(status_code=403, detail="Acesso negado. Apenas administradores podem acessar este recurso.")
+    # Valida is_admin também no banco (dupla verificação)
+    user = db.query(User).filter(User.email == request.state.user_email).first()
+    if not user or not user.is_admin:
+        raise HTTPException(status_code=403, detail="Acesso negado.")
+    return user
+
+
 @router.get("/dashboard")
-def get_admin_dashboard(request: Request, db: Session = Depends(get_db)):
-    # Na vida real, validar is_admin.
-    # if not getattr(request.state, "user_email", None) or not db.query(User).filter(User.email==request.state.user_email, User.is_admin==True).first():
-    #    raise HTTPException(status_code=403, detail="Acesso negado")
-        
+def get_admin_dashboard(admin_user: User = Depends(require_admin), db: Session = Depends(get_db)):
+    """Resumo geral do painel administrativo."""
     total_users = db.query(func.count(User.id)).scalar()
     total_pro = db.query(func.count(User.id)).filter(User.is_pro == True).scalar()
     total_conversions = db.query(func.count(Conversion.id)).scalar()
-    
-    # MRR Simples
     mrr = db.query(func.sum(Payment.amount)).filter(Payment.status == 'approved').scalar() or 0.0
-    
-    # Conversões recentes
+
     recent = db.query(Conversion).order_by(Conversion.created_at.desc()).limit(15).all()
-    recent_data = [{"id": c.id, "tool_id": c.tool_id, "status": c.status, "date": c.created_at} for c in recent]
-    
+    recent_data = [{"id": c.id, "tool_id": c.tool_id, "status": c.status, "date": str(c.created_at)} for c in recent]
+
     return {
         "metrics": {
             "mrr": round(mrr, 2),
@@ -31,4 +39,104 @@ def get_admin_dashboard(request: Request, db: Session = Depends(get_db)):
             "conversions": total_conversions
         },
         "recent_logs": recent_data
+    }
+
+
+@router.get("/stats")
+def get_admin_stats(admin_user: User = Depends(require_admin), db: Session = Depends(get_db)):
+    """Métricas detalhadas para o painel administrativo."""
+    total_users = db.query(func.count(User.id)).scalar()
+    total_pro = db.query(func.count(User.id)).filter(User.is_pro == True).scalar()
+    total_conversions = db.query(func.count(Conversion.id)).scalar()
+    total_revenue = db.query(func.sum(Payment.amount)).filter(Payment.status == 'approved').scalar() or 0.0
+
+    # Últimas 7 conversões por ferramenta
+    top_tools_raw = (
+        db.query(Conversion.tool_id, func.count(Conversion.id).label("count"))
+        .group_by(Conversion.tool_id)
+        .order_by(func.count(Conversion.id).desc())
+        .limit(10)
+        .all()
+    )
+    top_tools = [{"tool_id": t[0], "count": t[1]} for t in top_tools_raw]
+
+    return {
+        "total_users": total_users,
+        "total_pro_users": total_pro,
+        "total_conversions": total_conversions,
+        "total_revenue": round(total_revenue, 2),
+        "top_tools": top_tools,
+        "conversion_rate": round((total_pro / total_users * 100) if total_users > 0 else 0, 1)
+    }
+
+
+@router.get("/users")
+def get_admin_users(
+    skip: int = 0,
+    limit: int = 50,
+    admin_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Lista de usuários paginada para o painel administrativo."""
+    users = db.query(User).order_by(User.created_at.desc()).offset(skip).limit(limit).all()
+    total = db.query(func.count(User.id)).scalar()
+
+    return {
+        "total": total,
+        "users": [
+            {
+                "id": u.id,
+                "email": u.email,
+                "name": u.name,
+                "is_pro": u.is_pro,
+                "is_admin": u.is_admin,
+                "created_at": str(u.created_at)
+            }
+            for u in users
+        ]
+    }
+
+
+@router.get("/logs")
+def get_admin_logs(
+    limit: int = 50,
+    admin_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Logs de sistema e conversões recentes para o painel administrativo."""
+    recent_conversions = (
+        db.query(Conversion)
+        .order_by(Conversion.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    system_logs = (
+        db.query(SystemLog)
+        .order_by(SystemLog.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return {
+        "conversions": [
+            {
+                "id": c.id,
+                "tool_id": c.tool_id,
+                "status": c.status,
+                "original_filename": c.original_filename,
+                "execution_time": c.execution_time,
+                "created_at": str(c.created_at)
+            }
+            for c in recent_conversions
+        ],
+        "system_logs": [
+            {
+                "id": l.id,
+                "event_type": l.event_type,
+                "description": l.description,
+                "created_at": str(l.created_at)
+            }
+            for l in system_logs
+        ]
     }

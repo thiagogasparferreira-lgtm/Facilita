@@ -16,6 +16,7 @@ async def auth_middleware(request: Request, call_next):
     request.state.user_email = "anonymous@facilita.com"
     request.state.user_plan = "FREE"
     request.state.is_authenticated = False
+    request.state.is_admin = False
     
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
@@ -25,6 +26,7 @@ async def auth_middleware(request: Request, call_next):
             request.state.user_email = payload.get("sub", "anonymous@facilita.com")
             request.state.user_plan = "PRO" if payload.get("is_pro") else "FREE"
             request.state.is_authenticated = True
+            request.state.is_admin = bool(payload.get("is_admin", False))
             
     response = await call_next(request)
     return response

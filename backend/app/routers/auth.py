@@ -36,10 +36,11 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": new_user.email, "is_pro": new_user.is_pro}, expires_delta=access_token_expires
+        data={"sub": new_user.email, "is_pro": new_user.is_pro, "is_admin": new_user.is_admin},
+        expires_delta=access_token_expires
     )
     
-    return {"success": True, "access_token": access_token, "token_type": "bearer", "user": {"email": new_user.email, "name": new_user.name, "is_pro": new_user.is_pro}}
+    return {"success": True, "access_token": access_token, "token_type": "bearer", "user": {"email": new_user.email, "name": new_user.name, "is_pro": new_user.is_pro, "is_admin": new_user.is_admin}}
 
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
@@ -49,10 +50,11 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": db_user.email, "is_pro": db_user.is_pro}, expires_delta=access_token_expires
+        data={"sub": db_user.email, "is_pro": db_user.is_pro, "is_admin": db_user.is_admin},
+        expires_delta=access_token_expires
     )
     
-    return {"success": True, "access_token": access_token, "token_type": "bearer", "user": {"email": db_user.email, "name": db_user.name, "is_pro": db_user.is_pro}}
+    return {"success": True, "access_token": access_token, "token_type": "bearer", "user": {"email": db_user.email, "name": db_user.name, "is_pro": db_user.is_pro, "is_admin": db_user.is_admin}}
 
 @router.get("/me")
 def get_me(token: str, db: Session = Depends(get_db)):
