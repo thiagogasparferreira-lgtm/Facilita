@@ -9,10 +9,8 @@ bcrypt==4.0.1
 python-jose[cryptography]==3.3.0
 qrcode[pil]==7.4.2
 Pillow==10.3.0
-rembg==2.0.57
 PyPDF2==3.0.1
 python-docx==1.1.2
 reportlab==4.2.0
-rembg==2.0.57
 PyJWT==2.13.0
 
