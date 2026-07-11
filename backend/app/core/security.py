@@ -1,12 +1,25 @@
+import os
+import secrets
+import warnings
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
 from passlib.context import CryptContext
 
-# Secret keys deveriam vir de env
-SECRET_KEY = "facilita-super-secret-key-prod-2026"
+# SECRET_KEY deve ser definida como variável de ambiente em produção.
+# Se não estiver definida, gera uma chave aleatória (inválida entre restarts) e emite aviso.
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    SECRET_KEY = secrets.token_hex(32)
+    warnings.warn(
+        "[SEGURANÇA] SECRET_KEY não definida como variável de ambiente! "
+        "Usando chave gerada em runtime — tokens serão invalidados a cada restart. "
+        "Defina SECRET_KEY no painel do Render.",
+        RuntimeWarning
+    )
+
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 dias
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
