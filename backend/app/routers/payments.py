@@ -49,11 +49,27 @@ class WebhookRequest(BaseModel):
     transaction_id: str
     status: str
 
+import os
+WEBHOOK_SECRET_TOKEN = os.environ.get("WEBHOOK_SECRET_TOKEN", "")
+
 @router.post("/webhook/mock")
-def mock_payment_webhook(webhook_data: WebhookRequest, db: Session = Depends(get_db)):
+def mock_payment_webhook(
+    webhook_data: WebhookRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
     """
-    Mock endpoint para simular o recebimento de webhook do Mercado Pago / Stripe
+    Mock endpoint para simular recebimento de webhook do Mercado Pago.
+    Protegido por token de assinatura via header X-Webhook-Token.
     """
+    # Verificação de assinatura/origem — rejeita se token não bater
+    token = request.headers.get("X-Webhook-Token", "")
+    if not WEBHOOK_SECRET_TOKEN or token != WEBHOOK_SECRET_TOKEN:
+        raise HTTPException(
+            status_code=403,
+            detail="Token de webhook inválido ou não configurado. Defina WEBHOOK_SECRET_TOKEN no Render."
+        )
+
     payment = db.query(Payment).filter(Payment.transaction_id == webhook_data.transaction_id).first()
     if not payment:
         raise HTTPException(status_code=404, detail="Payment not found")
