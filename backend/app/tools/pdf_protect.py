@@ -17,8 +17,13 @@ class PdfProtectTool(BaseTool):
     def execute(self, file_path: str, params: Dict[str, Any], user_plan: str) -> str:
         if not file_path.lower().endswith(".pdf"):
             raise ValueError("O arquivo deve ser um PDF.")
-            
-        password = params.get("password", "facilita") if params else "facilita"
+        
+        # Senha é obrigatória — não usamos fallback previsível
+        password = (params or {}).get("password", "").strip()
+        if not password:
+            raise ValueError("Uma senha é obrigatória para proteger o PDF. Por favor, informe uma senha.")
+        if len(password) < 4:
+            raise ValueError("A senha deve ter pelo menos 4 caracteres.")
         
         unique_id = uuid.uuid4().hex
         output_filename = f"protected_{unique_id}.pdf"
