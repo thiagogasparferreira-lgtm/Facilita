@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /ferramentas/
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /auth/
+
+Sitemap: https://facilita-alpha.vercel.app/sitemap.xml

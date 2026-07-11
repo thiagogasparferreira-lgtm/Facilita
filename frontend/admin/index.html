@@ -4,13 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard | Facilita</title>
-  
+  <!-- Não indexar painel admin -->
+  <meta name="robots" content="noindex, nofollow">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/dashboard.css">
+
+  <!-- Guard de rota admin: executado ANTES de renderizar qualquer conteúdo -->
+  <script>
+    (function() {
+      try {
+        var raw = localStorage.getItem('facilita_user');
+        var user = raw ? JSON.parse(raw) : null;
+        if (!user || !user.token || !user.is_admin) {
+          // Redireciona imediatamente para o login sem renderizar a página
+          window.location.replace('../auth/login.html');
+        }
+      } catch(e) {
+        window.location.replace('../auth/login.html');
+      }
+    })();
+  </script>
 </head>
 <body>
 

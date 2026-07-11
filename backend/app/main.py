@@ -65,6 +65,15 @@ async def apply_auth(request: Request, call_next):
 # Permite que os arquivos convertidos na pasta storage/outputs sejam baixados diretamente
 app.mount("/downloads", StaticFiles(directory=str(OUTPUT_DIR)), name="downloads")
 
+@app.middleware("http")
+async def add_cache_control_for_downloads(request: Request, call_next):
+    """Adiciona Cache-Control para arquivos estáticos servidos em /downloads."""
+    response = await call_next(request)
+    if request.url.path.startswith("/downloads/"):
+        response.headers["Cache-Control"] = "public, max-age=3600"  # 1 hora
+    return response
+
+
 @app.get("/health")
 def health_check():
     """Rota de Health Check"""

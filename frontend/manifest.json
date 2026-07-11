@@ -1,0 +1,22 @@
+{
+  "name": "Facilita",
+  "short_name": "Facilita",
+  "description": "Resolva tarefas online em segundos. Converta arquivos, remova fundos, gere QR codes e muito mais.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563EB",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
