@@ -26,11 +26,14 @@ RATE_LIMIT_WINDOW_SECONDS = 60
 RATE_LIMIT_MAX_REQUESTS_FREE = 30
 RATE_LIMIT_MAX_REQUESTS_PRO = 120
 
-# Mock banco de dados para chaves de API e Sessões
-MOCK_API_KEYS = {
-    "facilita_key_test_123456": {"user_email": "thiago@facilita.com", "plan": "PRO"},
-    "facilita_key_partner_abc": {"user_email": "partner@domain.com", "plan": "PRO"}
-}
+# API Keys — carregadas de variável de ambiente para evitar hardcoding de segredos
+# Formato esperado: JSON string com {"key": {"user_email": "...", "plan": "PRO"}}
+import json as _cfg_json
+_mock_keys_raw = os.environ.get("MOCK_API_KEYS_JSON", "{}")
+try:
+    MOCK_API_KEYS = _cfg_json.loads(_mock_keys_raw)
+except Exception:
+    MOCK_API_KEYS = {}
 
 # Versão do sistema
 APP_VERSION = "1.0.6"

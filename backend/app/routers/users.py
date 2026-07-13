@@ -6,6 +6,11 @@ from app.db.models import User, Conversion, Download, Subscription
 
 router = APIRouter()
 
+@router.get("/profile")
+def get_user_profile(request: Request, db: Session = Depends(get_db)):
+    """Alias de /dashboard para compatibilidade com frontend."""
+    return get_user_dashboard(request=request, db=db)
+
 @router.get("/dashboard")
 def get_user_dashboard(request: Request, db: Session = Depends(get_db)):
     if not request.state.is_authenticated:

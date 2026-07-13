@@ -22,6 +22,28 @@ async def rate_limit_middleware(request: Request, call_next):
     user_plan = getattr(request.state, "user_plan", "FREE")
     auth_method = getattr(request.state, "auth_method", "session")
 
+    # -------------------------------------------------------
+    # PROTEÇÃO ANTI-BRUTE-FORCE: rotas de auth têm limite rígido por IP
+    # -------------------------------------------------------
+    AUTH_ROUTES = ["/api/v1/auth/login", "/api/v1/auth/register"]
+    if any(path.startswith(r) for r in AUTH_ROUTES):
+        auth_limit_key = f"auth::{client_ip}"
+        AUTH_MAX = 5       # máximo 5 tentativas por janela
+        current_time = time.time()
+        if auth_limit_key not in request_history:
+            request_history[auth_limit_key] = []
+        auth_history = [t for t in request_history[auth_limit_key]
+                        if current_time - t < RATE_LIMIT_WINDOW_SECONDS]
+        request_history[auth_limit_key] = auth_history
+        if len(auth_history) >= AUTH_MAX:
+            return JSONResponse(status_code=429, content={
+                "success": False, "tool": None,
+                "download_url": None, "execution_time": 0.0, "size": 0,
+                "message": "Muitas tentativas de login. Aguarde 1 minuto antes de tentar novamente."
+            })
+        request_history[auth_limit_key].append(current_time)
+    # -------------------------------------------------------
+
     # A chave do rate limit será o email (se autenticado) ou o IP do cliente
     limit_key = user_email if user_email != "anonymous@facilita.com" else client_ip
 

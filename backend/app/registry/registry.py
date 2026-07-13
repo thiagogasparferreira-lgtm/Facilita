@@ -34,6 +34,7 @@ class ToolRegistry:
         self.register("pdf-watermark", PdfWatermarkTool)
         self.register("img-to-pdf", ImgToPdfTool)
         self.register("image-compress", ImageCompressTool)
+        self.register("comprimir-imagem", ImageCompressTool)   # alias PT-BR
         self.register("watermark", WatermarkTool)
         self.register("qr-code", QrCodeTool)
         self.register("password-gen", PasswordGenTool)
