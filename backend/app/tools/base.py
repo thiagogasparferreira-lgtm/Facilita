@@ -39,12 +39,13 @@ class BaseTool(ABC):
         """
         Método wrapper central de execução da ferramenta.
         Garante a medição do tempo de execução e a resposta padronizada.
+        Tools que não precisam de arquivo (qr-code, password-gen) podem receber file_path=None.
         """
         if params is None:
             params = {}
 
-        # 1. Validações básicas de formato
-        if not self.validate_format(filename):
+        # 1. Validações básicas de formato (apenas se houver arquivo)
+        if filename and not self.validate_format(filename):
             return {
                 "success": False,
                 "tool": self.tool_id,
@@ -54,8 +55,8 @@ class BaseTool(ABC):
                 "message": f"Formato de arquivo não suportado. Extensões permitidas: {', '.join(self.allowed_extensions)}."
             }
 
-        # 2. Validações básicas de tamanho
-        if not self.validate_size(file_size, user_plan):
+        # 2. Validações básicas de tamanho (apenas se houver arquivo)
+        if file_size > 0 and not self.validate_size(file_size, user_plan):
             limit_mb = LIMITS_FILE_SIZE.get(user_plan, LIMITS_FILE_SIZE["FREE"]) / (1024 * 1024)
             return {
                 "success": False,
@@ -71,19 +72,23 @@ class BaseTool(ABC):
             # 3. Execução real da lógica da ferramenta
             output_file_path = self.execute(file_path, params, user_plan)
             execution_time = round(time.time() - start_time, 2)
-            
+
             # Se for bem-sucedido, calcula o tamanho do output
-            output_size = os.path.getsize(output_file_path)
-            output_filename = os.path.basename(output_file_path)
-            
+            output_size = os.path.getsize(output_file_path) if output_file_path and os.path.exists(output_file_path) else 0
+            output_filename = os.path.basename(output_file_path) if output_file_path else None
+
             return {
                 "success": True,
                 "tool": self.tool_id,
-                "download_url": f"/downloads/{output_filename}",
+                "download_url": f"/downloads/{output_filename}" if output_filename else None,
                 "execution_time": execution_time,
                 "size": output_size,
                 "message": "Operação realizada com sucesso."
             }
+        except ValueError:
+            # ValueError indica erro de validação (ex: senha obrigatória, parâmetro inválido).
+            # Re-lança para que o main.py converta em HTTP 400 com mensagem clara.
+            raise
         except Exception as e:
             execution_time = round(time.time() - start_time, 2)
             print(f"Erro ao executar a ferramenta {self.tool_id}: {str(e)}")
