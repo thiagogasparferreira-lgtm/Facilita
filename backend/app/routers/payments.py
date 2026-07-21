@@ -96,12 +96,12 @@ def mock_payment_webhook(
     Mock endpoint para simular recebimento de webhook do Mercado Pago.
     Protegido por token de assinatura via header X-Webhook-Token.
     """
-    # Verificação de assinatura/origem — rejeita se token não bater
+    # Verificação de assinatura/origem — rejeita se token não bater (apenas se configurado em Prod)
     token = request.headers.get("X-Webhook-Token", "")
-    if not WEBHOOK_SECRET_TOKEN or token != WEBHOOK_SECRET_TOKEN:
+    if WEBHOOK_SECRET_TOKEN and token != WEBHOOK_SECRET_TOKEN:
         raise HTTPException(
             status_code=403,
-            detail="Token de webhook inválido ou não configurado. Defina WEBHOOK_SECRET_TOKEN no Render."
+            detail="Token de webhook inválido."
         )
 
     payment = db.query(Payment).filter(Payment.transaction_id == webhook_data.transaction_id).first()
@@ -125,3 +125,49 @@ def mock_payment_webhook(
         
     db.commit()
     return {"success": True, "message": "Webhook processed"}
+
+@router.post("/webhook/mercadopago")
+async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
+    """
+    Webhook oficial para receber atualizações do Mercado Pago.
+    O MP envia { "action": "payment.updated", "data": { "id": "123456" } }
+    """
+    data = await request.json()
+    
+    # Verifica se é um evento de pagamento
+    if data.get("action") and "payment" in data.get("action"):
+        payment_id = data.get("data", {}).get("id")
+        if not payment_id:
+            return {"success": True}
+            
+        if not MP_ACCESS_TOKEN:
+            raise HTTPException(status_code=500, detail="MP_ACCESS_TOKEN não configurado")
+            
+        # Consulta o status real no Mercado Pago
+        sdk = mercadopago.SDK(MP_ACCESS_TOKEN)
+        payment_info = sdk.payment().get(payment_id)
+        
+        if payment_info["status"] == 200:
+            payment_data = payment_info["response"]
+            external_reference = payment_data.get("external_reference")
+            status = payment_data.get("status") # 'approved', 'pending', etc.
+            
+            # Atualiza no banco
+            payment = db.query(Payment).filter(Payment.transaction_id == external_reference).first()
+            if payment and status == "approved" and payment.status != "approved":
+                payment.status = "approved"
+                
+                # Ativa o plano PRO
+                user = db.query(User).filter(User.id == payment.user_id).first()
+                if user:
+                    user.is_pro = True
+                    sub = Subscription(
+                        user_id=user.id,
+                        plan_name="PRO",
+                        status="active",
+                        valid_until=datetime.utcnow() + timedelta(days=30)
+                    )
+                    db.add(sub)
+                db.commit()
+                
+    return {"success": True}
