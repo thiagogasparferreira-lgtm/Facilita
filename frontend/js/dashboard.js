@@ -229,7 +229,7 @@ function setupUserUpgradeFlow(user) {
   const upgradeBtn = document.getElementById('upgrade-plan-btn');
   const statsPlanType = document.getElementById('stats-plan-type');
   
-  if (user.plan === 'PRO') {
+  if (user.is_pro || user.plan === 'PRO') {
     if (currentPlanStrong) currentPlanStrong.textContent = "Plano PRO (Acesso Ilimitado)";
     if (proBadgeStatus) {
       proBadgeStatus.textContent = "ATIVO";
@@ -245,7 +245,7 @@ function setupUserUpgradeFlow(user) {
     }
   }
 
-  if (upgradeBtn && user.plan === 'FREE') {
+  if (upgradeBtn && (!user.is_pro || user.plan === 'FREE')) {
     upgradeBtn.addEventListener('click', async () => {
       upgradeBtn.innerHTML = "Processando PIX...";
       upgradeBtn.disabled = true;
@@ -273,6 +273,7 @@ function setupUserUpgradeFlow(user) {
             if (webhookRes.ok) {
               alert("Pagamento APROVADO! Bem-vindo ao PRO!");
               user.plan = 'PRO';
+              user.is_pro = true;
               localStorage.setItem('facilita_user_session', JSON.stringify(user));
               location.reload();
             }
