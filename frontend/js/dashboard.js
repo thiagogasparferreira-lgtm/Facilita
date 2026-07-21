@@ -3,9 +3,7 @@
    Controle de Abas, Sessão, Favoritos Dinâmicos e Métricas do Admin.
    ========================================================================== */
 
-const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "http://localhost:8000"
-  : "https://facilita-api-backend.onrender.com";
+// API_BASE_URL já é importada globalmente via auth.js
 const ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
 
 document.addEventListener('DOMContentLoaded', () => {
