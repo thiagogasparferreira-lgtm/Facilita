@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
@@ -91,9 +91,14 @@
             <h1>Olá, Thiago 👋</h1>
             <p>Acompanhe seu consumo e suas conversões recentes.</p>
           </div>
-          <button class="btn btn-primary" onclick="window.location.href='../index.html#catalogo'">
-            <i data-lucide="plus"></i> Nova Tarefa
-          </button>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary" style="border: 1px solid var(--border-color); background: transparent; color: var(--text-color);" onclick="window.open('mailto:feedback@facilita.com?subject=Feedback%20Beta', '_blank')">
+              <i data-lucide="message-square"></i> Enviar Feedback
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='../index.html#catalogo'">
+              <i data-lucide="plus"></i> Nova Tarefa
+            </button>
+          </div>
         </div>
 
         <div class="dashboard-grid">

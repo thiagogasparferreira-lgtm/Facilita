@@ -17,10 +17,12 @@ async def logger_middleware(request: Request, call_next):
     user_plan = getattr(request.state, "user_plan", "FREE")
     auth_method = getattr(request.state, "auth_method", "session")
 
-    print(
-        f"[Logger] [{request.method}] {path} | "
-        f"Usuário: {user_email} ({user_plan}) | Auth: {auth_method} | "
-        f"Status: {response.status_code} | Tempo: {duration}ms"
-    )
+    import os
+    if os.environ.get("DEBUG") == "true":
+        print(
+            f"[Logger] [{request.method}] {path} | "
+            f"Usuário: {user_email} ({user_plan}) | Auth: {auth_method} | "
+            f"Status: {response.status_code} | Tempo: {duration}ms"
+        )
     
     return response
