@@ -181,7 +181,8 @@ function checkAuth(requiredRole = null) {
 }
 
 // Deslogar Usuário
-function logout() {
+function logout(e) {
+  if (e && e.preventDefault) e.preventDefault();
   localStorage.removeItem('facilita_user_session');
   window.location.href = '../index.html';
 }
