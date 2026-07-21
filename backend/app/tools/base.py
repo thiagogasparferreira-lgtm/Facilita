@@ -76,11 +76,31 @@ class BaseTool(ABC):
             # Se for bem-sucedido, calcula o tamanho do output
             output_size = os.path.getsize(output_file_path) if output_file_path and os.path.exists(output_file_path) else 0
             output_filename = os.path.basename(output_file_path) if output_file_path else None
+            
+            download_url = None
+            if output_file_path and os.path.exists(output_file_path):
+                from app.core import storage
+                # Faz o upload para S3 ou salva no disco local
+                saved_key = storage.upload_file(output_file_path, output_filename, folder="outputs")
+                
+                # Deleta o arquivo temporário local de saída após o upload
+                if storage.USE_S3:
+                    try:
+                        os.remove(output_file_path)
+                    except Exception:
+                        pass
+                
+                # Gera URL assinada (S3) ou usa a rota de download local
+                presigned = storage.generate_presigned_url(saved_key)
+                if presigned:
+                    download_url = presigned
+                else:
+                    download_url = f"/downloads/{output_filename}"
 
             return {
                 "success": True,
                 "tool": self.tool_id,
-                "download_url": f"/downloads/{output_filename}" if output_filename else None,
+                "download_url": download_url,
                 "execution_time": execution_time,
                 "size": output_size,
                 "message": "Operação realizada com sucesso."

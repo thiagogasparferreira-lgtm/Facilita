@@ -192,10 +192,12 @@ async def run_tool(
         db_session.add(conv)
         db_session.commit()
 
-        # Adiciona o host correto na URL de download se for bem-sucedido
+        # Adiciona o host correto na URL de download se for relativa (arquivo local)
         if result["success"] and result.get("download_url"):
-            base_url = str(request.base_url).rstrip("/")
-            result["download_url"] = f"{base_url}{result['download_url']}"
+            dl_url = result["download_url"]
+            if not dl_url.startswith("http"):
+                base_url = str(request.base_url).rstrip("/")
+                result["download_url"] = f"{base_url}{dl_url}"
 
         return result
 
