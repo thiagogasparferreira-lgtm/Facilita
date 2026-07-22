@@ -29,6 +29,7 @@ def generate_pix(request_data: PixRequest, request: Request, db: Session = Depen
     transaction_id = f"PIX-{uuid.uuid4().hex[:12].upper()}"
 
     pix_payload = ""
+    pix_base64 = ""
     external_id = transaction_id
 
     if MP_ACCESS_TOKEN:
@@ -52,6 +53,7 @@ def generate_pix(request_data: PixRequest, request: Request, db: Session = Depen
             if "point_of_interaction" in payment_info:
                 pix_data = payment_info["point_of_interaction"]["transaction_data"]
                 pix_payload = pix_data["qr_code"]
+                pix_base64 = pix_data.get("qr_code_base64", "")
                 external_id = str(payment_info["id"])
             else:
                 raise Exception("Erro ao gerar PIX no Mercado Pago.")
@@ -60,6 +62,16 @@ def generate_pix(request_data: PixRequest, request: Request, db: Session = Depen
     else:
         # Mocking Mercado Pago / Pix creation (Fallback para dev)
         pix_payload = f"00020101021126580014br.gov.bcb.pix0136{uuid.uuid4()}5204000053039865405{amount}5802BR5915Facilita PRO6009Sao Paulo62070503***6304ABCD"
+        try:
+            import qrcode
+            import io
+            import base64
+            img = qrcode.make(pix_payload)
+            buffered = io.BytesIO()
+            img.save(buffered, format="PNG")
+            pix_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        except ImportError:
+            pix_base64 = ""
     
     payment = Payment(
         user_id=user.id,
@@ -75,8 +87,22 @@ def generate_pix(request_data: PixRequest, request: Request, db: Session = Depen
         "success": True,
         "transaction_id": external_id,
         "pix_qrcode_data": pix_payload,
+        "pix_base64": pix_base64,
         "amount": amount,
         "expires_in": 1800 # 30 min
+    }
+
+@router.get("/{transaction_id}/status")
+def get_payment_status(transaction_id: str, request: Request, db: Session = Depends(get_db)):
+    if not request.state.is_authenticated:
+        raise HTTPException(status_code=401, detail="Não autorizado")
+    
+    payment = db.query(Payment).filter(Payment.transaction_id == transaction_id, Payment.user_id == db.query(User).filter(User.email == request.state.user_email).first().id).first()
+    if not payment:
+        raise HTTPException(status_code=404, detail="Pagamento não encontrado")
+        
+    return {
+        "status": payment.status # pending, approved, rejected
     }
 
 class WebhookRequest(BaseModel):

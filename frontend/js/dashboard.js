@@ -422,9 +422,28 @@ function setupUserUpgradeFlow(user) {
 
   if (upgradeBtn && (!user.is_pro || user.plan === 'FREE')) {
     upgradeBtn.addEventListener('click', async () => {
-      upgradeBtn.innerHTML = "Processando PIX...";
-      upgradeBtn.disabled = true;
+      const modal = document.getElementById('checkout-modal');
+      const loadingDiv = document.getElementById('checkout-loading');
+      const qrDiv = document.getElementById('checkout-qr');
+      const successDiv = document.getElementById('checkout-success');
+      const qrImage = document.getElementById('pix-qr-image');
+      const copyBtn = document.getElementById('copy-pix-btn');
+      const closeBtn = document.getElementById('close-checkout');
+      const finishBtn = document.getElementById('finish-checkout-btn');
+
+      if (!modal) return;
       
+      // Setup initial modal state
+      modal.style.display = 'flex';
+      loadingDiv.style.display = 'block';
+      qrDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      // Close logic
+      const closeModal = () => { modal.style.display = 'none'; };
+      closeBtn.onclick = closeModal;
+      finishBtn.onclick = () => location.reload();
+
       try {
         // Gera o PIX
         const res = await fetch(`${API_BASE_URL}/api/v1/payments/pix/generate`, {
@@ -435,34 +454,82 @@ function setupUserUpgradeFlow(user) {
         const data = await res.json();
         
         if (data.success) {
-          alert(`Código PIX (Copia e Cola) gerado:\n\n${data.pix_qrcode_data}\n\nAguardando pagamento... Simulando confirmação em 3 segundos!`);
+          loadingDiv.style.display = 'none';
+          qrDiv.style.display = 'block';
           
-          // Simula o Webhook MercadoPago confirmando pagamento
-          setTimeout(async () => {
-            const webhookRes = await fetch(`${API_BASE_URL}/api/v1/payments/webhook/mock`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ transaction_id: data.transaction_id, status: "approved" })
-            });
-            
-            if (webhookRes.ok) {
-              alert("Pagamento APROVADO! Bem-vindo ao PRO!");
-              user.plan = 'PRO';
-              user.is_pro = true;
-              localStorage.setItem('facilita_user_session', JSON.stringify(user));
-              location.reload();
+          // Set image
+          if (data.pix_base64) {
+            qrImage.src = `data:image/png;base64,${data.pix_base64}`;
+          }
+
+          // Copy button
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(data.pix_qrcode_data);
+            const originalHtml = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i data-lucide="check" style="width: 18px; height: 18px;"></i> Copiado!';
+            if (window.lucide) lucide.createIcons();
+            setTimeout(() => {
+              copyBtn.innerHTML = originalHtml;
+              if (window.lucide) lucide.createIcons();
+            }, 2000);
+          };
+
+          if (window.lucide) lucide.createIcons();
+
+          // Polling
+          let polling = true;
+          closeBtn.addEventListener('click', () => { polling = false; }, {once: true});
+
+          // Se for o PIX Mockado (sem chave MP configurada), simula a aprovação em 10 segundos
+          if (data.pix_qrcode_data.includes("Facilita PRO")) {
+            setTimeout(async () => {
+              if (polling) {
+                await fetch(`${API_BASE_URL}/api/v1/payments/webhook/mock`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ transaction_id: data.transaction_id, status: "approved" })
+                });
+              }
+            }, 8000);
+          }
+
+          const pollInterval = setInterval(async () => {
+            if (!polling) {
+              clearInterval(pollInterval);
+              return;
             }
-          }, 3000);
+            try {
+              const statusRes = await fetch(`${API_BASE_URL}/api/v1/payments/${data.transaction_id}/status`, {
+                headers: { "Authorization": `Bearer ${user.token}` }
+              });
+              if (statusRes.ok) {
+                const statusData = await statusRes.json();
+                if (statusData.status === 'approved') {
+                  clearInterval(pollInterval);
+                  qrDiv.style.display = 'none';
+                  successDiv.style.display = 'block';
+                  
+                  // Simulate webhook local update just in case
+                  user.is_pro = true;
+                  user.plan = 'PRO';
+                  localStorage.setItem('facilita_user_session', JSON.stringify(user));
+                }
+              }
+            } catch (e) {
+              console.error("Polling error", e);
+            }
+          }, 5000);
+
         } else {
-          alert("Erro ao gerar PIX: " + (data.detail || "Falha"));
-          upgradeBtn.innerHTML = "Pagar com PIX";
-          upgradeBtn.disabled = false;
+          alert("Erro ao gerar PIX: " + data.detail);
+          closeModal();
         }
-      } catch (err) {
-        alert("Erro de conexão com servidor PIX.");
-        upgradeBtn.innerHTML = "Pagar com PIX";
-        upgradeBtn.disabled = false;
+      } catch (error) {
+        console.error("Erro no pagamento", error);
+        alert("Falha na conexão com o sistema de pagamento.");
+        closeModal();
       }
+      upgradeBtn.disabled = false;
     });
   }
 }
