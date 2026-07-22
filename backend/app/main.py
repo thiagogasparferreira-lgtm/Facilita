@@ -61,17 +61,35 @@ async def apply_rate_limit(request: Request, call_next):
 async def apply_auth(request: Request, call_next):
     return await auth_middleware(request, call_next)
 
-# Monta o diretório de downloads estáticos
-# Permite que os arquivos convertidos na pasta storage/outputs sejam baixados diretamente
-app.mount("/downloads", StaticFiles(directory=str(OUTPUT_DIR)), name="downloads")
+import asyncio
+from fastapi import BackgroundTasks
+from fastapi.responses import FileResponse
 
-@app.middleware("http")
-async def add_cache_control_for_downloads(request: Request, call_next):
-    """Adiciona Cache-Control para arquivos estáticos servidos em /downloads."""
-    response = await call_next(request)
-    if request.url.path.startswith("/downloads/"):
-        response.headers["Cache-Control"] = "public, max-age=3600"  # 1 hora
-    return response
+async def delayed_delete_file(path: str, delay: int = 900):
+    """Deleta o arquivo após um atraso (padrão 15 minutos) para permitir previews e downloads múltiplos."""
+    await asyncio.sleep(delay)
+    try:
+        if os.path.exists(path):
+            os.remove(path)
+    except Exception:
+        pass
+
+@app.get("/downloads/{filename}")
+async def download_file(filename: str, background_tasks: BackgroundTasks):
+    """Rota para download do arquivo com deleção postergada (15 minutos)."""
+    file_path = os.path.join(OUTPUT_DIR, filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Arquivo não encontrado ou já expirou.")
+    
+    # Adiciona a tarefa de deletar o arquivo em 15 minutos
+    background_tasks.add_task(delayed_delete_file, file_path)
+    
+    return FileResponse(
+        path=file_path, 
+        filename=filename,
+        media_type='application/octet-stream',
+        headers={"Cache-Control": "public, max-age=3600"}
+    )
 
 
 @app.get("/health")

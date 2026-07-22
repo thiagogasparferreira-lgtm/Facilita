@@ -934,10 +934,17 @@ function setupGenericToolLogic() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const toolId = urlParams.get('tool');
+    
+    let paramValue = null;
+    const paramInput = document.getElementById('generic-param-input');
+    if (paramInput) {
+      paramValue = paramInput.value;
+    }
 
-    sendFileToBackend(
+    sendGenericFileToBackend(
       toolId,
       fileToUpload,
+      paramValue,
       (percentage) => {
         progressBarFill.style.width = percentage + '%';
       },
