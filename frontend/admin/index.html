@@ -44,21 +44,21 @@
           <span>Facilita Admin</span>
         </a>
         
-        <ul class="sidebar-menu">
+      <ul class="sidebar-menu">
           <li>
-            <a href="#" class="sidebar-item-link active" style="color: white; background-color: rgba(255,255,255,0.1);">
+            <a href="#" class="sidebar-item-link active" data-tab="tab-dashboard" style="color: white; background-color: rgba(255,255,255,0.1);">
               <i data-lucide="bar-chart-3"></i>
               <span>Métricas</span>
             </a>
           </li>
           <li>
-            <a href="#" class="sidebar-item-link" style="color: var(--gray-400);">
+            <a href="#" class="sidebar-item-link" data-tab="tab-users" style="color: var(--gray-400);">
               <i data-lucide="users"></i>
               <span>Usuários</span>
             </a>
           </li>
           <li>
-            <a href="#" class="sidebar-item-link" style="color: var(--gray-400);">
+            <a href="#" class="sidebar-item-link" data-tab="tab-settings" style="color: var(--gray-400);">
               <i data-lucide="settings"></i>
               <span>Configurações</span>
             </a>
@@ -66,29 +66,34 @@
         </ul>
       </div>
       
-      <div class="sidebar-user" style="border-top-color: rgba(255,255,255,0.1);">
-        <div class="sidebar-user-info">
-          <div class="sidebar-avatar" style="background-color: #EF4444;">A</div>
+      <div class="sidebar-user" style="border-top-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+        <div class="sidebar-user-info" style="display: flex; align-items: center; gap: 12px;">
+          <div class="sidebar-avatar" style="background-color: #EF4444; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">A</div>
           <div class="sidebar-user-details">
-            <h5 style="color: white;">Administrador</h5>
-            <span style="color: var(--gray-400);">Root</span>
+            <h5 style="color: white; margin: 0; font-size: 14px;">Administrador</h5>
+            <span style="color: var(--gray-400); font-size: 12px;">Root</span>
           </div>
         </div>
+        <button onclick="logout(event)" title="Sair" style="background: none; border: none; color: var(--gray-400); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          <i data-lucide="log-out" style="width: 20px; height: 20px;"></i>
+        </button>
       </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
       
-      <div class="content-header">
-        <div class="content-header-title">
-          <h1>Visão Geral do Negócio</h1>
-          <p>Acompanhe o crescimento e uso da plataforma Facilita.</p>
+      <!-- TAB: DASHBOARD -->
+      <div id="tab-dashboard" class="admin-tab active" style="display: block;">
+        <div class="content-header">
+          <div class="content-header-title">
+            <h1>Visão Geral do Negócio</h1>
+            <p>Acompanhe o crescimento e uso da plataforma Facilita.</p>
+          </div>
+          <div style="background-color: white; color: var(--gray-800); border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;">
+            Últimos 30 dias <i data-lucide="chevron-down" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-left: 8px;"></i>
+          </div>
         </div>
-        <div style="background-color: white; border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;">
-          Últimos 30 dias <i data-lucide="chevron-down" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-left: 8px;"></i>
-        </div>
-      </div>
 
       <div class="admin-metrics-grid">
         <div class="dashboard-card">
@@ -212,9 +217,51 @@
               <div style="background: #F59E0B; width: 78%; height: 100%;"></div>
             </div>
           </div>
-        </div>
+      </div> <!-- End of tab-dashboard -->
 
-      </div>
+      <!-- TAB: USUÁRIOS -->
+      <div id="tab-users" class="admin-tab" style="display: none;">
+        <div class="content-header">
+          <div class="content-header-title">
+            <h1>Gerenciamento de Usuários</h1>
+            <p>Visualize e gerencie as contas cadastradas na plataforma.</p>
+          </div>
+        </div>
+        
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>Nome</th>
+                <th>Plano</th>
+                <th>Cargo</th>
+                <th>Data de Cadastro</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 24px; color: var(--gray-400);">Carregando usuários...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div> <!-- End of tab-users -->
+
+      <!-- TAB: CONFIGURAÇÕES -->
+      <div id="tab-settings" class="admin-tab" style="display: none;">
+        <div class="content-header">
+          <div class="content-header-title">
+            <h1>Configurações do Sistema</h1>
+            <p>Ajustes globais da plataforma Facilita.</p>
+          </div>
+        </div>
+        
+        <div class="dashboard-card" style="margin-top: 24px;">
+          <p style="color: var(--gray-400);">As configurações avançadas do sistema serão disponibilizadas na Fase 3 do projeto.</p>
+        </div>
+      </div> <!-- End of tab-settings -->
+
     </main>
   </div>
 

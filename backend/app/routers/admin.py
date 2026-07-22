@@ -140,3 +140,30 @@ def get_admin_logs(
             for l in system_logs
         ]
     }
+
+
+@router.get("/users")
+def get_admin_users(
+    limit: int = 50,
+    offset: int = 0,
+    admin_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Lista os usuários cadastrados para o painel administrativo."""
+    users = db.query(User).order_by(User.created_at.desc()).offset(offset).limit(limit).all()
+    total = db.query(func.count(User.id)).scalar()
+    
+    return {
+        "total": total,
+        "users": [
+            {
+                "id": u.id,
+                "email": u.email,
+                "name": u.name,
+                "is_pro": u.is_pro,
+                "is_admin": u.is_admin,
+                "created_at": str(u.created_at)
+            }
+            for u in users
+        ]
+    }

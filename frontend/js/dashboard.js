@@ -106,9 +106,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminSettingsForm) {
       adminSettingsForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Configurações globais salvas e aplicadas ao cluster FastAPI!');
+    
+    // Controle de abas do admin
+    const adminSidebarLinks = document.querySelectorAll('.sidebar-item-link');
+    adminSidebarLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tabId = link.getAttribute('data-tab');
+        if (!tabId) return;
+        
+        // Estilizar botões (ativo)
+        adminSidebarLinks.forEach(l => {
+          l.classList.remove('active');
+          l.style.color = 'var(--gray-400)';
+          l.style.backgroundColor = 'transparent';
+        });
+        link.classList.add('active');
+        link.style.color = 'white';
+        link.style.backgroundColor = 'rgba(255,255,255,0.1)';
+        
+        // Mostrar aba correspondente
+        document.querySelectorAll('.admin-tab').forEach(tab => tab.style.display = 'none');
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) targetTab.style.display = 'block';
+        
+        // Se abrir aba de usuários, carregar dados
+        if (tabId === 'tab-users') {
+          loadAdminUsers(user.token);
+        }
       });
-    }
+    });
   }
   
   // Inicializa ícones dinâmicos nas abas
@@ -119,6 +146,67 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error("Erro na inicialização da dashboard:", e);
   }
 });
+
+// ==========================================
+// FUNÇÕES DE ADMIN
+// ==========================================
+
+function loadAdminUsers(token) {
+  const tbody = document.getElementById('admin-users-table');
+  if (!tbody) return;
+  
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--gray-400);"><i data-lucide="loader-2" class="lucide-spin" style="margin:auto;"></i> Carregando...</td></tr>`;
+  if(window.lucide) window.lucide.createIcons();
+
+  fetch(`${ADMIN_API_URL}/users`, {
+    headers: { "Authorization": `Bearer ${token}` }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Falha ao carregar usuários");
+    return res.json();
+  })
+  .then(data => {
+    if (data.users.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--gray-400);">Nenhum usuário encontrado.</td></tr>`;
+      return;
+    }
+    
+    tbody.innerHTML = data.users.map(u => `
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--gray-600);">
+              ${u.email.substring(0,2).toUpperCase()}
+            </div>
+            <span style="font-size: 14px; color: var(--gray-800);">${u.email}</span>
+          </div>
+        </td>
+        <td style="font-size: 14px; color: var(--gray-800);">${u.name || '--'}</td>
+        <td>
+          ${u.is_pro 
+            ? '<span style="background: rgba(245, 158, 11, 0.1); color: #F59E0B; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">PRO</span>'
+            : '<span style="background: rgba(147, 51, 234, 0.1); color: #9333EA; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">FREE</span>'
+          }
+        </td>
+        <td>
+          ${u.is_admin 
+            ? '<span style="background: rgba(239, 68, 68, 0.1); color: #EF4444; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">Admin</span>'
+            : '<span style="color: var(--gray-500); font-size: 13px;">Usuário</span>'
+          }
+        </td>
+        <td style="font-size: 13px; color: var(--gray-500);">
+          ${new Date(u.created_at).toLocaleDateString('pt-BR')}
+        </td>
+      </tr>
+    `).join('');
+  })
+  .catch(err => {
+    console.error(err);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: #EF4444;">Erro ao carregar lista de usuários.</td></tr>`;
+  });
+}
+
+
 
 /* ==========================================================================
    FUNÇÕES AUXILIARES - PAINEL DO USUÁRIO

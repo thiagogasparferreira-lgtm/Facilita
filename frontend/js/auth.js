@@ -8,6 +8,26 @@ const API_BASE_URL = window.location.hostname === "localhost" || window.location
   : "https://facilita-api-backend.onrender.com";
 const API_AUTH_URL = `${API_BASE_URL}/api/v1/auth`;
 
+// Auto-redirect se já estiver logado (evita mostrar form de login para quem já tem sessão)
+(function autoRedirectIfLoggedIn() {
+  const isAuthPage = window.location.pathname.includes('/auth/login.html') || window.location.pathname.includes('/auth/cadastro.html');
+  if (isAuthPage) {
+    const sessionData = localStorage.getItem('facilita_user_session');
+    if (sessionData) {
+      try {
+        const user = JSON.parse(sessionData);
+        if (user && user.token) {
+          if (user.role === 'admin') {
+            window.location.replace('../admin/index.html');
+          } else {
+            window.location.replace('../dashboard/index.html');
+          }
+        }
+      } catch (e) {}
+    }
+  }
+})();
+
 // Exibe mensagem de erro no formulário
 function showAuthError(formId, message) {
   const form = document.getElementById(formId);
