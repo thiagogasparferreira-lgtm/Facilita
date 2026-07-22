@@ -53,6 +53,12 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
         
+    # Auto-promote specific emails to Admin (retroactive fix)
+    if not db_user.is_admin and db_user.email.lower() in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']:
+        db_user.is_admin = True
+        db.commit()
+        db.refresh(db_user)
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": db_user.email, "is_pro": db_user.is_pro, "is_admin": db_user.is_admin},
