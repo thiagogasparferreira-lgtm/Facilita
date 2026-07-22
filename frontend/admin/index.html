@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
@@ -15,12 +15,13 @@
   <link rel="stylesheet" href="../css/dashboard.css">
 
   <!-- Guard de rota admin: executado ANTES de renderizar qualquer conteúdo -->
-  <script src="../js/config.js"></script>`n  <<script>
+  <script src="../js/config.js"></script>
+  <script>
     (function() {
       try {
-        var raw = localStorage.getItem('facilita_user');
+        var raw = localStorage.getItem('facilita_user_session');
         var user = raw ? JSON.parse(raw) : null;
-        if (!user || !user.token || !user.is_admin) {
+        if (!user || !user.token || user.role !== 'admin') {
           // Redireciona imediatamente para o login sem renderizar a página
           window.location.replace('../auth/login.html');
         }
