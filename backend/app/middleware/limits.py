@@ -85,8 +85,9 @@ async def rate_limit_middleware(request: Request, call_next):
             return JSONResponse(status_code=429, content={
                 "success": False, "tool": None,
                 "download_url": None, "execution_time": 0.0, "size": 0,
+                "detail": "Muitas tentativas de login. Aguarde 1 minuto antes de tentar novamente.",
                 "message": "Muitas tentativas de login. Aguarde 1 minuto antes de tentar novamente."
-            })
+            }, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true", "Access-Control-Allow-Methods": "*", "Access-Control-Allow-Headers": "*"})
     # -------------------------------------------------------
 
     # A chave do rate limit será o email (se autenticado) ou o IP do cliente
@@ -112,8 +113,10 @@ async def rate_limit_middleware(request: Request, call_next):
                 "download_url": None,
                 "execution_time": 0.0,
                 "size": 0,
+                "detail": "Você atingiu o limite de requisições. Por favor, aguarde um momento.",
                 "message": "Você atingiu o limite de requisições. Por favor, aguarde um momento antes de tentar novamente."
-            }
+            },
+            headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true", "Access-Control-Allow-Methods": "*", "Access-Control-Allow-Headers": "*"}
         )
 
     return await call_next(request)
