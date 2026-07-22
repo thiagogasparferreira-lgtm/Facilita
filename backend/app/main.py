@@ -196,6 +196,14 @@ async def run_tool(
                 user_id = user_obj.id
 
         tool_db = db_session.query(DBTool).filter(DBTool.tool_id == tool).first()
+        if not tool_db:
+            # Cadastra a ferramenta automaticamente para manter a integridade relacional
+            tool_name = tool.replace('-', ' ').title()
+            tool_db = DBTool(tool_id=tool, name=tool_name)
+            db_session.add(tool_db)
+            db_session.commit()
+            db_session.refresh(tool_db)
+
         t_id = tool_db.id if tool_db else None
 
         conv = Conversion(
