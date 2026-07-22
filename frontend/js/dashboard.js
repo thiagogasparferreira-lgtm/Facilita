@@ -43,9 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const isPro = data.is_pro;
           const currentPlan = isPro ? 'PRO' : 'FREE';
           
-          if (user.plan !== currentPlan || user.is_pro !== isPro) {
+          if (user.plan !== currentPlan || user.is_pro !== isPro || data.new_token) {
             user.plan = currentPlan;
             user.is_pro = isPro;
+            if (data.new_token) {
+                user.token = data.new_token; // Atualiza o token imutável
+            }
+            
             localStorage.setItem('facilita_user_session', JSON.stringify(user));
             
             if (userDispPlan) {

@@ -78,11 +78,21 @@ def get_me(token: str, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == email).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
+    # Generate a fresh token with the latest DB state
+    from app.core.security import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+    from datetime import timedelta
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    new_token = create_access_token(
+        data={"sub": db_user.email, "is_pro": db_user.is_pro, "is_admin": db_user.is_admin},
+        expires_delta=access_token_expires
+    )
         
     return {
         "email": db_user.email,
         "name": db_user.name,
         "is_pro": db_user.is_pro,
         "avatar_url": db_user.avatar_url,
-        "language": db_user.language
+        "language": db_user.language,
+        "new_token": new_token
     }
