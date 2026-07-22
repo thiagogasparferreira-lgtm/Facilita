@@ -167,3 +167,50 @@ def get_admin_users(
             for u in users
         ]
     }
+
+@router.delete("/users/{user_id}")
+def delete_admin_user(
+    user_id: int,
+    admin_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Deleta um usuário permanentemente."""
+    target_user = db.query(User).filter(User.id == user_id).first()
+    if not target_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    
+    # Travas de segurança
+    if target_user.id == admin_user.id:
+        raise HTTPException(status_code=403, detail="Você não pode excluir sua própria conta.")
+    if target_user.email.lower() == 'thiagogasparferreira@gmail.com':
+        raise HTTPException(status_code=403, detail="O Super Admin principal não pode ser excluído.")
+
+    # Exclui conversões relacionadas
+    db.query(Conversion).filter(Conversion.user_id == user_id).delete()
+    
+    # Exclui o usuário
+    db.delete(target_user)
+    db.commit()
+    
+    return {"success": True, "message": "Usuário excluído com sucesso."}
+
+@router.patch("/users/{user_id}/plan")
+def toggle_user_plan(
+    user_id: int,
+    admin_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Alterna o plano de um usuário entre FREE e PRO."""
+    target_user = db.query(User).filter(User.id == user_id).first()
+    if not target_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+        
+    # Travas de segurança
+    if target_user.id == admin_user.id and target_user.is_pro:
+        raise HTTPException(status_code=403, detail="Você não pode rebaixar sua própria conta para o plano gratuito.")
+        
+    target_user.is_pro = not target_user.is_pro
+    db.commit()
+    
+    plan_name = "PRO" if target_user.is_pro else "FREE"
+    return {"success": True, "message": f"O plano do usuário foi alterado para {plan_name}.", "is_pro": target_user.is_pro}

@@ -161,7 +161,7 @@ function loadAdminUsers(token) {
   const tbody = document.getElementById('admin-users-table');
   if (!tbody) return;
   
-  tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--gray-400);"><i data-lucide="loader-2" class="lucide-spin" style="margin:auto;"></i> Carregando...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--gray-400);"><i data-lucide="loader-2" class="lucide-spin" style="margin:auto;"></i> Carregando...</td></tr>`;
   if(window.lucide) window.lucide.createIcons();
 
   fetch(`${ADMIN_API_URL}/users`, {
@@ -173,7 +173,7 @@ function loadAdminUsers(token) {
   })
   .then(data => {
     if (data.users.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--gray-400);">Nenhum usuário encontrado.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--gray-400);">Nenhum usuário encontrado.</td></tr>`;
       return;
     }
     
@@ -203,18 +203,67 @@ function loadAdminUsers(token) {
         <td style="font-size: 13px; color: var(--gray-500);">
           ${new Date(u.created_at).toLocaleDateString('pt-BR')}
         </td>
+        <td>
+          <div style="display: flex; gap: 8px;">
+            <button onclick="toggleUserPlan(${u.id}, ${u.is_pro})" style="background: transparent; border: none; cursor: pointer; color: ${u.is_pro ? '#F59E0B' : 'var(--gray-400)'};" title="Alternar Plano">
+              <i data-lucide="star" style="width: 18px; height: 18px; ${u.is_pro ? 'fill: currentColor;' : ''}"></i>
+            </button>
+            <button onclick="deleteUser(${u.id})" style="background: transparent; border: none; cursor: pointer; color: #EF4444;" title="Excluir Usuário">
+              <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+        </td>
       </tr>
     `).join('');
+    if(window.lucide) window.lucide.createIcons();
   })
   .catch(err => {
     console.error(err);
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: #EF4444;">Erro ao carregar lista de usuários.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: #EF4444;">Erro ao carregar lista de usuários.</td></tr>`;
   });
 }
 
+async function toggleUserPlan(userId, isPro) {
+  const token = JSON.parse(localStorage.getItem('facilita_user_session')).token;
+  if (!confirm(`Deseja ${isPro ? 'rebaixar' : 'promover'} este usuário?`)) return;
+  
+  try {
+    const res = await fetch(`${ADMIN_API_URL}/users/${userId}/plan`, {
+      method: 'PATCH',
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Sucesso: " + data.message);
+      loadAdminUsers(token);
+    } else {
+      alert("Erro: " + data.detail);
+    }
+  } catch (e) {
+    alert("Erro de comunicação com o servidor.");
+  }
+}
 
-
-/* ==========================================================================
+async function deleteUser(userId) {
+  const token = JSON.parse(localStorage.getItem('facilita_user_session')).token;
+  if (!confirm("Tem certeza que deseja excluir este usuário permanentemente? Todas as conversões dele serão perdidas!")) return;
+  
+  try {
+    const res = await fetch(`${ADMIN_API_URL}/users/${userId}`, {
+      method: 'DELETE',
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Sucesso: " + data.message);
+      loadAdminUsers(token);
+    } else {
+      alert("Erro: " + data.detail);
+    }
+  } catch (e) {
+    alert("Erro de comunicação com o servidor.");
+  }
+}/* ==========================================================================
    FUNÇÕES AUXILIARES - PAINEL DO USUÁRIO
    ========================================================================== */
 
