@@ -35,6 +35,31 @@ document.addEventListener('DOMContentLoaded', () => {
       userDispPlan.className = `status-badge ${userPlan === 'PRO' ? 'status-success' : 'status-pending'}`;
     }
 
+    // Auto-atualizar os dados do usuário (caso admin tenha mudado o plano)
+    fetch(`${API_BASE_URL}/api/v1/auth/me?token=${user.token}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.email) {
+          const isPro = data.is_pro;
+          const currentPlan = isPro ? 'PRO' : 'FREE';
+          
+          if (user.plan !== currentPlan || user.is_pro !== isPro) {
+            user.plan = currentPlan;
+            user.is_pro = isPro;
+            localStorage.setItem('facilita_user_session', JSON.stringify(user));
+            
+            if (userDispPlan) {
+              userDispPlan.textContent = isPro ? 'Plano PRO' : 'Plano Gratuito';
+              userDispPlan.className = `status-badge ${isPro ? 'status-success' : 'status-pending'}`;
+            }
+            if (typeof setupUserUpgradeFlow === 'function') {
+              setupUserUpgradeFlow(user);
+            }
+          }
+        }
+      })
+      .catch(e => console.error("Erro ao auto-atualizar sessão:", e));
+
     // 2. CONTROLE DE NAVEGAÇÃO ENTRE ABAS
     const sidebarLinks = document.querySelectorAll('.sidebar-item-link');
     sidebarLinks.forEach(link => {

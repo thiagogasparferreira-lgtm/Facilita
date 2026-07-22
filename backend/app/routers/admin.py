@@ -122,7 +122,7 @@ def get_admin_logs(
         "conversions": [
             {
                 "id": c.id,
-                "tool_id": c.tool_id,
+                "tool_id": c.tool.name if c.tool else "Ferramenta Desconhecida",
                 "status": c.status,
                 "original_filename": c.original_filename,
                 "execution_time": c.execution_time,
