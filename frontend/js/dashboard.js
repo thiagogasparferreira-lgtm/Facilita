@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (avatarInitials) avatarInitials.textContent = userAvatar;
     if (userDispName) userDispName.textContent = userName;
+    
+    const greetingTitle = document.getElementById('greeting-title');
+    if (greetingTitle) greetingTitle.textContent = `Olá, ${userName} 👋`;
+
     if (userDispPlan) {
       userDispPlan.textContent = userPlan === 'PRO' ? 'Plano PRO' : 'Plano Gratuito';
       userDispPlan.className = `status-badge ${userPlan === 'PRO' ? 'status-success' : 'status-pending'}`;

@@ -82,12 +82,13 @@ if (loginForm) {
       
       if (response.ok) {
         // Sucesso: Salva o token JWT e dados do usuário
+        const userName = (data.user && data.user.name) ? data.user.name : email.split('@')[0];
         const userSession = {
-          name: email.split('@')[0],
+          name: userName,
           email: email,
           role: (email.toLowerCase() === 'admin@facilita.com' || email.toLowerCase() === 'thiagogasparferreira@gmail.com') ? "admin" : "user",
-          avatar: email.substring(0, 2).toUpperCase(),
-          plan: data.is_pro ? "PRO" : "FREE",
+          avatar: userName.substring(0, 2).toUpperCase(),
+          plan: (data.user && data.user.is_pro) ? "PRO" : "FREE",
           token: data.access_token
         };
         localStorage.setItem('facilita_user_session', JSON.stringify(userSession));
