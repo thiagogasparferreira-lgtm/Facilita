@@ -118,11 +118,32 @@ def get_admin_logs(
         .all()
     )
 
+    # Tradução amigável das ferramentas
+    tool_translations = {
+        "pdf-word": "PDF para Word",
+        "word-pdf": "Word para PDF",
+        "juntar-pdf": "Juntar PDF",
+        "pdf-splitter": "Dividir PDF",
+        "rotacionar-pdf": "Rotacionar PDF",
+        "proteger-pdf": "Proteger PDF",
+        "desproteger-pdf": "Desproteger PDF",
+        "pdf-watermark": "Marca d'água PDF",
+        "img-to-pdf": "Imagem para PDF",
+        "image-compress": "Comprimir Imagem",
+        "comprimir-imagem": "Comprimir Imagem",
+        "watermark": "Marca d'água em Imagem",
+        "qr-code": "Gerador de QR Code",
+        "password-gen": "Gerador de Senhas Fortes",
+        "remove-bg": "Remover Fundo",
+        "remover-fundo": "Remover Fundo",
+        "Ferramenta Desconhecida": "Teste de Sistema (Anterior)"
+    }
+
     return {
         "conversions": [
             {
                 "id": c.id,
-                "tool_id": c.tool.name if c.tool else "Ferramenta Desconhecida",
+                "tool_id": tool_translations.get(c.tool.tool_id if c.tool else "unknown", c.tool.name if c.tool else "Teste de Sistema (Anterior)"),
                 "status": c.status,
                 "original_filename": c.original_filename,
                 "execution_time": c.execution_time,
