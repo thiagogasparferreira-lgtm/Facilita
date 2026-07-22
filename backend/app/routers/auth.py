@@ -25,10 +25,15 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     
     hashed_password = get_password_hash(user.password)
+    
+    # Auto-promote specific emails to Admin
+    is_admin = user.email in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']
+    
     new_user = User(
         email=user.email, 
         hashed_password=hashed_password,
-        name=user.name
+        name=user.name,
+        is_admin=is_admin
     )
     db.add(new_user)
     db.commit()
