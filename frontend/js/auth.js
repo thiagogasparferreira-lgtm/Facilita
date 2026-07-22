@@ -65,7 +65,7 @@ if (loginForm) {
         const userSession = {
           name: email.split('@')[0],
           email: email,
-          role: (email === 'admin@facilita.com' || email === 'thiagogasparferreira@gmail.com') ? "admin" : "user",
+          role: (email.toLowerCase() === 'admin@facilita.com' || email.toLowerCase() === 'thiagogasparferreira@gmail.com') ? "admin" : "user",
           avatar: email.substring(0, 2).toUpperCase(),
           plan: data.is_pro ? "PRO" : "FREE",
           token: data.access_token
@@ -120,7 +120,7 @@ if (registerForm) {
         
         if (loginResponse.ok) {
            const loginData = await loginResponse.json();
-           const role = (email === 'admin@facilita.com' || email === 'thiagogasparferreira@gmail.com') ? "admin" : "user";
+           const role = (email.toLowerCase() === 'admin@facilita.com' || email.toLowerCase() === 'thiagogasparferreira@gmail.com') ? "admin" : "user";
            const userSession = {
              name: name,
              email: email,
