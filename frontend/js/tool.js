@@ -377,7 +377,7 @@ function injectWorkspace(tool) {
           <label class="option-label">Tamanho da Senha</label>
           <input type="number" id="pass-length" class="option-input" value="16" min="8" max="64">
         </div>
-        <div class="options-grid" style="display:flex; gap:16px; margin-top:10px;">
+        <div class="options-grid" style="display:flex; flex-wrap:wrap; gap:16px; margin-top:10px; color: var(--gray-800); font-size: 14px; font-weight: 500;">
           <label><input type="checkbox" id="pass-upper" checked> Maiúsculas</label>
           <label><input type="checkbox" id="pass-lower" checked> Minúsculas</label>
           <label><input type="checkbox" id="pass-numbers" checked> Números</label>
@@ -388,7 +388,7 @@ function injectWorkspace(tool) {
         </div>
         
         <div class="result-card" id="result-card-pass" style="display:none; margin-top: 24px; text-align:center;">
-          <h2 id="pass-result-text" style="background:#f1f5f9; padding:20px; border-radius:8px; font-family:monospace; letter-spacing:2px; word-break: break-all;"></h2>
+          <h2 id="pass-result-text" style="background:#f1f5f9; color: #0F172A; padding:20px; border-radius:8px; font-family:monospace; letter-spacing:2px; word-break: break-all;"></h2>
           <button class="btn btn-secondary" style="margin-top:15px; width:100%;" onclick="navigator.clipboard.writeText(document.getElementById('pass-result-text').innerText); alert('Senha copiada!')">Copiar Senha</button>
         </div>
       </div>
