@@ -106,6 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminSettingsForm) {
       adminSettingsForm.addEventListener('submit', (e) => {
         e.preventDefault();
+      });
+    }
     
     // Controle de abas do admin
     const adminSidebarLinks = document.querySelectorAll('.sidebar-item-link');
