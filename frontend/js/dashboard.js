@@ -126,6 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Carregar dados reais se estiver no painel do usuário
+  if (!isPageAdmin) {
+    loadUserDashboard(user.token);
+  }
+
   // 4. FLUXOS EXCLUSIVOS DO PAINEL DO ADMINISTRADOR
   if (isPageAdmin) {
     loadAdminStats(user.token);
@@ -686,5 +691,93 @@ function appendLog(terminal, message, typeStr) {
   // Limitar número de linhas em tela
   if (terminal.childElementCount > 40) {
     terminal.removeChild(terminal.firstChild);
+  }
+}
+
+/* ==========================================================================
+   USER DASHBOARD DATA LOGIC
+   ========================================================================== */
+async function loadUserDashboard(token) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/v1/user/dashboard`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Erro ao carregar dashboard");
+    
+    const data = await res.json();
+    const stats = data.stats;
+    const plan = data.plan;
+    const history = data.history;
+
+    // 1. Atualiza os Cartões de Estatísticas
+    const elTotalConversions = document.getElementById('user-total-conversions');
+    const elTimeSaved = document.getElementById('user-time-saved');
+    const elAccountStatus = document.getElementById('user-account-status');
+    const elAccountLimit = document.getElementById('user-account-limit');
+    
+    if (elTotalConversions) elTotalConversions.textContent = stats.total_conversions || '0';
+    if (elTimeSaved) {
+      const minutes = Math.floor(stats.time_saved_seconds / 60);
+      const seconds = Math.floor(stats.time_saved_seconds % 60);
+      elTimeSaved.textContent = `${minutes}m ${seconds}s`;
+    }
+    
+    if (elAccountStatus) {
+      const isPro = plan.is_pro;
+      elAccountStatus.textContent = isPro ? 'PRO' : 'Gratuito';
+      elAccountStatus.style.color = isPro ? '#10B981' : '#F59E0B'; // Verde para PRO, Amarelo para Free
+      
+      const shieldIcon = elAccountStatus.parentElement.querySelector('[data-lucide="shield"]');
+      if (shieldIcon) shieldIcon.style.color = isPro ? '#10B981' : '#F59E0B';
+    }
+    
+    if (elAccountLimit) {
+      elAccountLimit.textContent = plan.is_pro ? 'Sem limites diários' : 'Limite: 5 arquivos/dia';
+    }
+
+    // 2. Atualiza os dados da aba "Assinatura"
+    const elBillingPlan = document.getElementById('user-billing-plan');
+    const elBillingPrice = document.getElementById('user-billing-price');
+    if (elBillingPlan) {
+      elBillingPlan.textContent = `Plano Atual: ${plan.is_pro ? 'PRO' : 'Gratuito'}`;
+    }
+    if (elBillingPrice) {
+      elBillingPrice.textContent = plan.is_pro ? 'R$ 29,90' : 'R$ 0,00';
+    }
+
+    // 3. Atualiza as Tabelas de Histórico
+    const renderTableRows = (items, includeSize = false) => {
+      if (!items || items.length === 0) {
+        return `<tr><td colspan="${includeSize ? 5 : 5}" style="text-align: center; padding: 24px; color: var(--gray-400);">Nenhuma conversão encontrada.</td></tr>`;
+      }
+      return items.map(c => {
+        const dateStr = new Date(c.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const isSuccess = c.status === 'success';
+        
+        let row = `<tr>`;
+        row += `<td>${c.tool}</td>`;
+        row += `<td>${c.filename}</td>`;
+        row += `<td>${dateStr}</td>`;
+        if (includeSize) {
+          row += `<td>--</td>`; // O endpoint /user/dashboard atual não retorna o result_size pra compor o tamanho, colocamos --
+        } else {
+          row += `<td><span class="status-badge ${isSuccess ? 'status-success' : 'status-pending'}">${isSuccess ? 'Concluído' : 'Falhou'}</span></td>`;
+        }
+        row += `<td><i data-lucide="download" class="action-icon-btn" style="${isSuccess ? '' : 'opacity: 0.5; cursor: not-allowed;'}"></i></td>`;
+        row += `</tr>`;
+        return row;
+      }).join('');
+    };
+
+    const tbodyRecent = document.getElementById('user-recent-activity-table');
+    const tbodyFull = document.getElementById('user-full-history-table');
+
+    if (tbodyRecent) tbodyRecent.innerHTML = renderTableRows(history.slice(0, 5), false);
+    if (tbodyFull) tbodyFull.innerHTML = renderTableRows(history, true);
+
+    if (window.lucide) window.lucide.createIcons();
+
+  } catch (error) {
+    console.error(error);
   }
 }
