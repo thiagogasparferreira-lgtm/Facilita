@@ -126,7 +126,8 @@ def get_admin_logs(
                 "status": c.status,
                 "original_filename": c.original_filename,
                 "execution_time": c.execution_time,
-                "created_at": str(c.created_at)
+                "created_at": str(c.created_at),
+                "user_email": c.user.email if c.user else "anônimo"
             }
             for c in recent_conversions
         ],

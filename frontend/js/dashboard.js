@@ -596,6 +596,34 @@ function startAdminLogsSimulation(token) {
       });
 
       // Exibe conversões como logs de atividade
+      const activityTable = document.getElementById('admin-recent-activity-table');
+      if (activityTable) {
+        if (convLogs.length === 0) {
+          activityTable.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-400);">Nenhuma atividade recente.</td></tr>';
+        } else {
+          activityTable.innerHTML = convLogs.map(c => {
+            const initial = c.user_email ? c.user_email.substring(0,1).toUpperCase() : '?';
+            const emailDisp = c.user_email || 'Anônimo';
+            const statusClass = c.status === 'success' ? 'status-success' : (c.status === 'failed' ? 'status-pending' : 'status-pending');
+            const statusDisp = c.status === 'success' ? 'Sucesso' : (c.status === 'failed' ? 'Falhou' : 'Processando');
+            
+            // Calculando tempo relativo simples
+            const diffMs = new Date() - new Date(c.created_at + 'Z');
+            const diffMins = Math.floor(diffMs / 60000);
+            const timeDisp = diffMins < 1 ? 'Agora' : (diffMins < 60 ? `${diffMins} min atrás` : `${Math.floor(diffMins/60)}h atrás`);
+
+            return `
+              <tr>
+                <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color: #1e293b;">${initial}</div> ${emailDisp}</div></td>
+                <td>${c.tool_id || '--'}</td>
+                <td><span class="status-badge ${statusClass}">${statusDisp}</span></td>
+                <td>${timeDisp}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
       convLogs.forEach(c => {
         appendLog(logTerminal,
           `${(c.created_at || '').substring(0,19).replace('T',' ')} [TOOL] ${c.tool_id} → ${c.status} (${c.original_filename || 'arquivo'})`,
