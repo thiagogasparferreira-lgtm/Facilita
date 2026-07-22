@@ -151,36 +151,9 @@
                   <th>Tempo</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="admin-recent-activity-table">
                 <tr>
-                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">M</div> marcos@...</div></td>
-                  <td>Remover Fundo</td>
-                  <td><span class="status-badge status-success">Sucesso</span></td>
-                  <td>Agora</td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">J</div> julia@...</div></td>
-                  <td>PDF para JPG</td>
-                  <td><span class="status-badge status-success">Sucesso</span></td>
-                  <td>2 min atrás</td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">C</div> carlos@...</div></td>
-                  <td>Comprimir PDF</td>
-                  <td><span class="status-badge status-pending">Processando</span></td>
-                  <td>3 min atrás</td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">A</div> ana@...</div></td>
-                  <td>Resumir IA</td>
-                  <td><span class="status-badge status-success">Sucesso</span></td>
-                  <td>10 min atrás</td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#E2E8F0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">P</div> pedro@...</div></td>
-                  <td>Juntar PDF</td>
-                  <td><span class="status-badge status-success">Sucesso</span></td>
-                  <td>15 min atrás</td>
+                  <td colspan="4" style="text-align: center; padding: 24px; color: var(--gray-400);">Carregando atividades...</td>
                 </tr>
               </tbody>
             </table>
@@ -190,14 +163,8 @@
         <!-- Terminal de Logs / Status Servidor -->
         <div>
           <h3 style="margin-bottom: 16px;">Status do Sistema</h3>
-          <div class="admin-logs-box">
-            <div class="admin-log-line">[10:25:01] INFO: Worker 1 (PDF) pronto.</div>
-            <div class="admin-log-line">[10:25:14] INFO: Upload de imagem concluído (id: 4920).</div>
-            <div class="admin-log-line" style="color: #F59E0B;">[10:25:15] WARN: IA API Latency > 1500ms.</div>
-            <div class="admin-log-line">[10:25:20] INFO: Conversão PDF para JPG finalizada em 1.2s.</div>
-            <div class="admin-log-line">[10:25:45] INFO: Nova assinatura PRO confirmada (Stripe: sub_KxA...).</div>
-            <div class="admin-log-line">[10:26:01] INFO: Limpeza de cache de arquivos executada. 24GB liberados.</div>
-            <div class="admin-log-line">[10:26:10] INFO: Worker 2 (IA) escalado.</div>
+          <div class="admin-logs-box" id="admin-logs-terminal">
+            <div style="text-align:center; padding: 20px; color: var(--gray-400);">Conectando aos logs em tempo real...</div>
           </div>
           
           <div style="margin-top: 24px;">
