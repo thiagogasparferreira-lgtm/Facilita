@@ -23,7 +23,7 @@ LIMITS_FILE_SIZE = {
 # Configurações de Rate Limit (por IP e E-mail de usuário)
 # Permite ex: 30 requisições por minuto para FREE
 RATE_LIMIT_WINDOW_SECONDS = 60
-RATE_LIMIT_MAX_REQUESTS_FREE = 30
+RATE_LIMIT_MAX_REQUESTS_FREE = 60
 RATE_LIMIT_MAX_REQUESTS_PRO = 120
 
 # API Keys — carregadas de variável de ambiente para evitar hardcoding de segredos

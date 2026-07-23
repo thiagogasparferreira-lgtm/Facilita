@@ -70,7 +70,12 @@ async def rate_limit_middleware(request: Request, call_next):
         return await call_next(request)
 
     # Identifica o usuário por email ou pelo IP do cliente
-    client_ip = request.client.host if request.client else "unknown"
+    x_forwarded_for = request.headers.get("X-Forwarded-For")
+    if x_forwarded_for:
+        client_ip = x_forwarded_for.split(",")[0].strip()
+    else:
+        client_ip = request.client.host if request.client else "unknown"
+        
     user_email = getattr(request.state, "user_email", "anonymous@facilita.com")
     user_plan = getattr(request.state, "user_plan", "FREE")
     auth_method = getattr(request.state, "auth_method", "session")
