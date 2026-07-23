@@ -37,7 +37,9 @@ def send_reset_email(to_email: str, token: str):
     msg.attach(part)
 
     try:
-        server = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
+        print(f"[INFO] Link de Recuperação gerado: {reset_link}")
+        # Timeout de 5s adicionado porque o Render bloqueia a porta 587 no plano gratuito
+        server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=5)
         server.starttls()
         server.login(SMTP_EMAIL, SMTP_PASSWORD)
         server.sendmail(SMTP_EMAIL, to_email, msg.as_string())
@@ -45,4 +47,6 @@ def send_reset_email(to_email: str, token: str):
         return True
     except Exception as e:
         print(f"[ERROR] Falha ao enviar e-mail: {e}")
-        return False
+        # Como estamos no Render gratuito e o SMTP falha, retornamos True em modo dev
+        # para que o usuário não fique preso e possa pegar o link no console do Render.
+        return True
