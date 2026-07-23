@@ -204,7 +204,7 @@ def delete_admin_user(
     # Travas de segurança
     if target_user.id == admin_user.id:
         raise HTTPException(status_code=403, detail="Você não pode excluir sua própria conta.")
-    if target_user.email.lower() == 'thiagogasparferreira@gmail.com':
+    if target_user.email.lower() == 'facilita.app.contato@gmail.com':
         raise HTTPException(status_code=403, detail="O Super Admin principal não pode ser excluído.")
 
     # Exclui conversões relacionadas

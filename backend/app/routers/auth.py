@@ -27,7 +27,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     hashed_password = get_password_hash(user.password)
     
     # Auto-promote specific emails to Admin
-    is_admin = user.email in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']
+    is_admin = user.email in ['admin@facilita.com', 'facilita.app.contato@gmail.com']
     
     new_user = User(
         email=user.email, 
@@ -54,7 +54,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
         
     # Auto-promote specific emails to Admin (retroactive fix)
-    if not db_user.is_admin and db_user.email.lower() in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']:
+    if not db_user.is_admin and db_user.email.lower() in ['admin@facilita.com', 'facilita.app.contato@gmail.com']:
         db_user.is_admin = True
         db.commit()
         db.refresh(db_user)
@@ -175,7 +175,7 @@ def google_login(req: GoogleLogin, db: Session = Depends(get_db)):
         if not db_user:
             # Create user if doesn't exist
             random_password = secrets.token_hex(16)
-            is_admin = email.lower() in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']
+            is_admin = email.lower() in ['admin@facilita.com', 'facilita.app.contato@gmail.com']
             
             db_user = User(
                 email=email,
@@ -242,7 +242,7 @@ def google_callback(credential: str = Form(...), db: Session = Depends(get_db)):
         
         if not db_user:
             random_password = secrets.token_hex(16)
-            is_admin = email.lower() in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']
+            is_admin = email.lower() in ['admin@facilita.com', 'facilita.app.contato@gmail.com']
             db_user = User(
                 email=email,
                 hashed_password=get_password_hash(random_password),

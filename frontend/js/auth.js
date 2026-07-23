@@ -165,7 +165,7 @@ if (registerForm) {
         
         if (loginResponse.ok) {
            const loginData = await loginResponse.json();
-           const role = (email.toLowerCase() === 'admin@facilita.com' || email.toLowerCase() === 'thiagogasparferreira@gmail.com') ? "admin" : "user";
+           const role = (email.toLowerCase() === 'admin@facilita.com' || email.toLowerCase() === 'facilita.app.contato@gmail.com') ? "admin" : "user";
            const userSession = {
              name: name,
              email: email,
