@@ -206,6 +206,10 @@ if (googleRegisterBtn) googleRegisterBtn.addEventListener('click', handleGoogleM
 
 // Função auxiliar para verificar sessão (Segurança de Rotas Frontend)
 function checkAuth(requiredRole = null) {
+  if (window.location.search.includes('google_token=')) {
+    return { name: "Carregando...", role: "user", email: "..." };
+  }
+
   const sessionData = localStorage.getItem('facilita_user_session');
   if (!sessionData) {
     window.location.href = '../auth/login.html';
