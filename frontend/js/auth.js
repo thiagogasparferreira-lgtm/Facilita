@@ -114,7 +114,7 @@ if (loginForm) {
         const userSession = {
           name: userName,
           email: email,
-          role: (email.toLowerCase() === 'admin@facilita.com' || email.toLowerCase() === 'thiagogasparferreira@gmail.com') ? "admin" : "user",
+          role: (data.user && data.user.is_admin) ? "admin" : "user",
           avatar: userName.substring(0, 2).toUpperCase(),
           plan: (data.user && data.user.is_pro) ? "PRO" : "FREE",
           token: data.access_token
