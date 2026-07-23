@@ -254,6 +254,10 @@ def google_callback(credential: str = Form(...), db: Session = Depends(get_db)):
             db.commit()
             db.refresh(db_user)
         else:
+            # Promove retroativamente se o email for de admin
+            if not db_user.is_admin and db_user.email.lower() in ['admin@facilita.com', 'facilita.app.contato@gmail.com']:
+                db_user.is_admin = True
+                
             if not db_user.avatar_url and avatar: db_user.avatar_url = avatar
             if not db_user.name and name: db_user.name = name
             db.commit()
