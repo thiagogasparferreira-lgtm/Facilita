@@ -87,7 +87,7 @@
 
 /* 2. ÁREA DE TRABALHO DA FERRAMENTA (WORKSPACE CARD) */
 .tool-workspace {
-  background-color: #FFFFFF;
+  background-color: var(--bg-color);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);

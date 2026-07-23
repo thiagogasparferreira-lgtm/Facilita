@@ -438,24 +438,24 @@ function injectWorkspace(tool) {
   // 5. Sorteador Online
   else if (tool.id === 'sorteador') {
     container.innerHTML = `
-      <div style="max-width: 600px; margin: 0 auto; background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+      <div style="max-width: 600px; margin: 0 auto; background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200);">
         <h3 style="margin-bottom: 16px;">Sorteador de Nomes ou Números</h3>
         <p style="margin-bottom: 16px; color: var(--gray-400);">Digite os nomes ou números abaixo (um por linha):</p>
-        <textarea id="sorteador-input" class="auth-input" style="height: 150px; resize: vertical; margin-bottom: 16px;" placeholder="Ana\nCarlos\nBeatriz\nJoão..."></textarea>
+        <textarea id="sorteador-input" class="option-input" style="height: 150px; resize: vertical; margin-bottom: 16px; font-size: 1rem;" placeholder="Ana\nCarlos\nBeatriz\nJoão..."></textarea>
         
         <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 24px;">
           <div style="flex: 1;">
-            <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--gray-300);">Quantos ganhadores?</label>
-            <input type="number" id="sorteador-qtd" class="auth-input" value="1" min="1">
+            <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--gray-400);">Quantos ganhadores?</label>
+            <input type="number" id="sorteador-qtd" class="option-input" value="1" min="1">
           </div>
           <button id="btn-sortear" class="btn btn-primary" style="flex: 2;">
             <i data-lucide="dices"></i> Sortear Agora
           </button>
         </div>
         
-        <div id="sorteador-result" style="display: none; padding: 24px; background: rgba(147, 51, 234, 0.1); border: 1px solid var(--primary-light); border-radius: 8px; text-align: center;">
-          <h4 style="color: var(--primary-light); margin-bottom: 16px;">Ganhador(es)!</h4>
-          <div id="sorteador-winners" style="font-size: 1.5rem; font-weight: bold; color: white;"></div>
+        <div id="sorteador-result" style="display: none; padding: 24px; background: rgba(139, 92, 246, 0.1); border: 1px solid var(--primary-blue); border-radius: 8px; text-align: center;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 16px;">Ganhador(es)!</h4>
+          <div id="sorteador-winners" style="font-size: 1.5rem; font-weight: bold; color: var(--dark-text);"></div>
         </div>
       </div>
     `;
@@ -498,21 +498,21 @@ function injectWorkspace(tool) {
     container.innerHTML = `
       <div style="max-width: 800px; margin: 0 auto;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
-          <div style="background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-light);" id="count-words">0</div>
+          <div style="background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); text-align: center;">
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-blue);" id="count-words">0</div>
             <div style="color: var(--gray-400); margin-top: 8px;">Palavras</div>
           </div>
-          <div style="background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-light);" id="count-chars">0</div>
+          <div style="background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); text-align: center;">
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-blue);" id="count-chars">0</div>
             <div style="color: var(--gray-400); margin-top: 8px;">Caracteres</div>
           </div>
-          <div style="background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-light);" id="count-chars-no-space">0</div>
+          <div style="background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); text-align: center;">
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-blue);" id="count-chars-no-space">0</div>
             <div style="color: var(--gray-400); margin-top: 8px;">S/ Espaços</div>
           </div>
         </div>
         
-        <textarea id="contador-input" class="auth-input" style="height: 300px; resize: vertical; font-size: 1rem; padding: 20px;" placeholder="Cole ou digite seu texto aqui para começar a contar..."></textarea>
+        <textarea id="contador-input" class="option-input" style="height: 300px; resize: vertical; font-size: 1rem; padding: 20px;" placeholder="Cole ou digite seu texto aqui para começar a contar..."></textarea>
       </div>
     `;
     lucide.createIcons();
@@ -532,8 +532,8 @@ function injectWorkspace(tool) {
   // 7. Conversor de Texto
   else if (tool.id === 'conversor-texto') {
     container.innerHTML = `
-      <div style="max-width: 800px; margin: 0 auto; background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
-        <textarea id="conversor-input" class="auth-input" style="height: 250px; resize: vertical; margin-bottom: 24px; font-size: 1rem;" placeholder="Cole seu texto aqui..."></textarea>
+      <div style="max-width: 800px; margin: 0 auto; background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200);">
+        <textarea id="conversor-input" class="option-input" style="height: 250px; resize: vertical; margin-bottom: 24px; font-size: 1rem;" placeholder="Cole seu texto aqui..."></textarea>
         
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
           <button class="btn btn-primary" id="btn-maiusculas">MAIÚSCULAS</button>
@@ -587,11 +587,11 @@ function injectWorkspace(tool) {
   // 8. Gerador de Lorem Ipsum
   else if (tool.id === 'lorem-ipsum') {
     container.innerHTML = `
-      <div style="max-width: 800px; margin: 0 auto; background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+      <div style="max-width: 800px; margin: 0 auto; background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200);">
         <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 24px;">
           <div style="flex: 1;">
-            <label style="display: block; margin-bottom: 8px; color: var(--gray-300);">Parágrafos</label>
-            <input type="number" id="lorem-qtd" class="auth-input" value="3" min="1" max="20">
+            <label style="display: block; margin-bottom: 8px; color: var(--gray-400);">Parágrafos</label>
+            <input type="number" id="lorem-qtd" class="option-input" value="3" min="1" max="20">
           </div>
           <button id="btn-gerar-lorem" class="btn btn-primary" style="flex: 2;">
             <i data-lucide="align-left"></i> Gerar Lorem Ipsum
@@ -599,7 +599,7 @@ function injectWorkspace(tool) {
         </div>
         
         <div style="position: relative;">
-          <textarea id="lorem-result" class="auth-input" style="height: 300px; resize: vertical; font-size: 1rem; padding: 20px;" readonly></textarea>
+          <textarea id="lorem-result" class="option-input" style="height: 300px; resize: vertical; font-size: 1rem; padding: 20px;" readonly></textarea>
           <button id="btn-copiar-lorem" class="btn btn-secondary" style="position: absolute; top: 16px; right: 16px; padding: 8px 16px; font-size: 0.875rem;">
             <i data-lucide="copy"></i> Copiar
           </button>
