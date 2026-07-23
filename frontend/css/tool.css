@@ -220,7 +220,7 @@
 
 .option-select:focus, .option-input:focus {
   border-color: var(--primary-blue);
-  background-color: #FFFFFF;
+  background-color: var(--bg-color);
 }
 
 /* 4. EXECUÇÃO E LOADING */
