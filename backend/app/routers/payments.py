@@ -53,7 +53,6 @@ def generate_pix(request_data: PixRequest, request: Request, db: Session = Depen
             if "point_of_interaction" in payment_info:
                 pix_data = payment_info["point_of_interaction"]["transaction_data"]
                 pix_payload = pix_data["qr_code"]
-                pix_base64 = pix_data.get("qr_code_base64", "")
                 external_id = str(payment_info["id"])
             else:
                 raise Exception("Erro ao gerar PIX no Mercado Pago.")
@@ -62,16 +61,18 @@ def generate_pix(request_data: PixRequest, request: Request, db: Session = Depen
     else:
         # Mocking Mercado Pago / Pix creation (Fallback para dev)
         pix_payload = f"00020101021126580014br.gov.bcb.pix0136{uuid.uuid4()}5204000053039865405{amount}5802BR5915Facilita PRO6009Sao Paulo62070503***6304ABCD"
-        try:
-            import qrcode
-            import io
-            import base64
-            img = qrcode.make(pix_payload)
-            buffered = io.BytesIO()
-            img.save(buffered, format="PNG")
-            pix_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-        except ImportError:
-            pix_base64 = ""
+
+    # Sempre gera a imagem QR Code localmente a partir da string PIX (Garante que a imagem nunca vem quebrada)
+    try:
+        import qrcode
+        import io
+        import base64
+        img = qrcode.make(pix_payload)
+        buffered = io.BytesIO()
+        img.save(buffered, format="PNG")
+        pix_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    except Exception:
+        pix_base64 = ""
     
     payment = Payment(
         user_id=user.id,
