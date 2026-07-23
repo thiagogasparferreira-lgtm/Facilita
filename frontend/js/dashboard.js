@@ -24,7 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const userAvatar = user.avatar || userName.substring(0,2).toUpperCase();
     const userPlan = user.plan || "FREE";
 
-    if (avatarInitials) avatarInitials.textContent = userAvatar;
+    if (avatarInitials) {
+      if (userAvatar.startsWith('http')) {
+        avatarInitials.innerHTML = `<img src="${userAvatar}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        avatarInitials.style.background = 'transparent';
+        avatarInitials.style.border = 'none';
+        avatarInitials.style.padding = '0';
+      } else {
+        avatarInitials.textContent = userAvatar;
+      }
+    }
     if (userDispName) userDispName.textContent = userName;
     
     const greetingTitle = document.getElementById('greeting-title');
@@ -479,19 +488,6 @@ function setupUserUpgradeFlow(user) {
           // Polling
           let polling = true;
           closeBtn.addEventListener('click', () => { polling = false; }, {once: true});
-
-          // Se for o PIX Mockado (sem chave MP configurada), simula a aprovação em 10 segundos
-          if (data.pix_qrcode_data.includes("Facilita PRO")) {
-            setTimeout(async () => {
-              if (polling) {
-                await fetch(`${API_BASE_URL}/api/v1/payments/webhook/mock`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ transaction_id: data.transaction_id, status: "approved" })
-                });
-              }
-            }, 8000);
-          }
 
           const pollInterval = setInterval(async () => {
             if (!polling) {
