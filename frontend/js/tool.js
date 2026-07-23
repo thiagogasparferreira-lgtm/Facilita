@@ -817,22 +817,42 @@ function injectWorkspace(tool) {
             <textarea id="cv-in-summary" class="option-input" style="height: 100px; resize: vertical;" oninput="updateCV()">Profissional com mais de 5 anos de experiência na criação de interfaces web. Apaixonado por usabilidade e performance, buscando sempre criar a melhor experiência para o usuário.</textarea>
           </div>
           
-          <div class="form-group">
-            <label>Experiência Recente (Empresa - Período)</label>
-            <input type="text" id="cv-in-exp-title" class="option-input" value="Tech Corp | 2020 - Atual" oninput="updateCV()">
-          </div>
-          <div class="form-group">
-            <label>Cargo na Experiência</label>
-            <input type="text" id="cv-in-exp-role" class="option-input" value="Desenvolvedor Pleno" oninput="updateCV()">
-          </div>
-          <div class="form-group">
-            <label>Descrição da Experiência</label>
-            <textarea id="cv-in-exp-desc" class="option-input" style="height: 80px; resize: vertical;" oninput="updateCV()">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40% e aumentando a retenção de usuários.</textarea>
+          <div id="cv-exp-container">
+            <h4 style="color: var(--gray-500); margin: 24px 0 16px; font-size: 14px;">Experiência Profissional</h4>
+            <div id="cv-exp-list">
+              <div class="cv-exp-form-item" style="border-left: 2px solid var(--gray-200); padding-left: 12px; margin-bottom: 16px; position: relative;">
+                <div class="form-group">
+                  <label>Empresa | Período</label>
+                  <input type="text" class="option-input exp-title" value="Tech Corp | 2020 - Atual" oninput="updateCV()">
+                </div>
+                <div class="form-group">
+                  <label>Cargo na Experiência</label>
+                  <input type="text" class="option-input exp-role" value="Desenvolvedor Pleno" oninput="updateCV()">
+                </div>
+                <div class="form-group">
+                  <label>Descrição da Experiência</label>
+                  <textarea class="option-input exp-desc" style="height: 80px; resize: vertical;" oninput="updateCV()">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40% e aumentando a retenção de usuários.</textarea>
+                </div>
+              </div>
+            </div>
+            <button class="btn" style="background: transparent; border: 1px dashed var(--gray-300); color: var(--gray-500); width: 100%; padding: 8px; font-size: 12px;" onclick="addExp()">+ Adicionar Experiência</button>
           </div>
           
-          <div class="form-group">
-            <label>Formação Acadêmica (Curso - Instituição)</label>
-            <input type="text" id="cv-in-edu" class="option-input" value="Bacharelado em Ciência da Computação - USP" oninput="updateCV()">
+          <div id="cv-edu-container">
+            <h4 style="color: var(--gray-500); margin: 24px 0 16px; font-size: 14px;">Formação Acadêmica</h4>
+            <div id="cv-edu-list">
+              <div class="cv-edu-form-item" style="border-left: 2px solid var(--gray-200); padding-left: 12px; margin-bottom: 16px; position: relative;">
+                <div class="form-group">
+                  <label>Curso - Instituição</label>
+                  <input type="text" class="option-input edu-title" value="Bacharelado em Ciência da Computação - USP" oninput="updateCV()">
+                </div>
+                <div class="form-group">
+                  <label>Status / Ano</label>
+                  <input type="text" class="option-input edu-subtitle" value="Concluído em 2020" oninput="updateCV()">
+                </div>
+              </div>
+            </div>
+            <button class="btn" style="background: transparent; border: 1px dashed var(--gray-300); color: var(--gray-500); width: 100%; padding: 8px; font-size: 12px;" onclick="addEdu()">+ Adicionar Formação</button>
           </div>
         </div>
         
@@ -885,18 +905,15 @@ function injectWorkspace(tool) {
                 
                 <div class="cv-section">
                   <div class="cv-section-title">Experiência</div>
-                  <div class="cv-item">
-                    <div class="cv-item-title" id="cv-out-exp-role">Desenvolvedor Pleno</div>
-                    <div class="cv-item-subtitle" id="cv-out-exp-title">Tech Corp | 2020 - Atual</div>
-                    <div class="cv-text" id="cv-out-exp-desc">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40% e aumentando a retenção de usuários.</div>
+                  <div id="cv-out-exp-list">
+                    <!-- Dynamic Experience -->
                   </div>
                 </div>
                 
                 <div class="cv-section">
                   <div class="cv-section-title">Educação</div>
-                  <div class="cv-item">
-                    <div class="cv-item-title" id="cv-out-edu">Bacharelado em Ciência da Computação - USP</div>
-                    <div class="cv-item-subtitle">Concluído</div>
+                  <div id="cv-out-edu-list">
+                    <!-- Dynamic Education -->
                   </div>
                 </div>
               </div>
@@ -918,6 +935,48 @@ function injectWorkspace(tool) {
     `;
     lucide.createIcons();
     
+    window.addExp = function() {
+      const div = document.createElement('div');
+      div.className = 'cv-exp-form-item';
+      div.style.cssText = 'border-left: 2px solid var(--gray-200); padding-left: 12px; margin-bottom: 16px; position: relative;';
+      div.innerHTML = `
+        <button onclick="this.parentElement.remove(); updateCV()" style="position: absolute; right: 0; top: 0; background: transparent; border: none; color: #ef4444; cursor: pointer; font-weight: bold;">X</button>
+        <div class="form-group">
+          <label>Empresa | Período</label>
+          <input type="text" class="option-input exp-title" value="Empresa | Ano - Ano" oninput="updateCV()">
+        </div>
+        <div class="form-group">
+          <label>Cargo na Experiência</label>
+          <input type="text" class="option-input exp-role" value="Cargo" oninput="updateCV()">
+        </div>
+        <div class="form-group">
+          <label>Descrição da Experiência</label>
+          <textarea class="option-input exp-desc" style="height: 80px; resize: vertical;" oninput="updateCV()">Descrição das atividades...</textarea>
+        </div>
+      `;
+      document.getElementById('cv-exp-list').appendChild(div);
+      updateCV();
+    };
+
+    window.addEdu = function() {
+      const div = document.createElement('div');
+      div.className = 'cv-edu-form-item';
+      div.style.cssText = 'border-left: 2px solid var(--gray-200); padding-left: 12px; margin-bottom: 16px; position: relative;';
+      div.innerHTML = `
+        <button onclick="this.parentElement.remove(); updateCV()" style="position: absolute; right: 0; top: 0; background: transparent; border: none; color: #ef4444; cursor: pointer; font-weight: bold;">X</button>
+        <div class="form-group">
+          <label>Curso - Instituição</label>
+          <input type="text" class="option-input edu-title" value="Curso - Instituição" oninput="updateCV()">
+        </div>
+        <div class="form-group">
+          <label>Status / Ano</label>
+          <input type="text" class="option-input edu-subtitle" value="Concluído / Cursando" oninput="updateCV()">
+        </div>
+      `;
+      document.getElementById('cv-edu-list').appendChild(div);
+      updateCV();
+    };
+
     window.updateCV = function() {
       // Tema
       const themeColor = document.getElementById('cv-in-color').value || '#2D3748';
@@ -944,10 +1003,39 @@ function injectWorkspace(tool) {
       document.getElementById('cv-out-skills').innerHTML = skillsHtml || '<span class="cv-skill-tag">Suas Habilidades</span>';
       
       document.getElementById('cv-out-summary').textContent = document.getElementById('cv-in-summary').value || 'Seu resumo...';
-      document.getElementById('cv-out-exp-title').textContent = document.getElementById('cv-in-exp-title').value || 'Empresa | Período';
-      document.getElementById('cv-out-exp-role').textContent = document.getElementById('cv-in-exp-role').value || 'Cargo';
-      document.getElementById('cv-out-exp-desc').textContent = document.getElementById('cv-in-exp-desc').value || 'Descrição...';
-      document.getElementById('cv-out-edu').textContent = document.getElementById('cv-in-edu').value || 'Sua formação...';
+      // Experiência Dinâmica
+      let expHtml = '';
+      document.querySelectorAll('.cv-exp-form-item').forEach(item => {
+        const title = item.querySelector('.exp-title').value;
+        const role = item.querySelector('.exp-role').value;
+        const desc = item.querySelector('.exp-desc').value;
+        if(title || role || desc) {
+          expHtml += `
+            <div class="cv-item">
+              <div class="cv-item-title">${role}</div>
+              <div class="cv-item-subtitle">${title}</div>
+              <div class="cv-text">${desc}</div>
+            </div>
+          `;
+        }
+      });
+      document.getElementById('cv-out-exp-list').innerHTML = expHtml || '<div class="cv-text">Nenhuma experiência informada.</div>';
+
+      // Educação Dinâmica
+      let eduHtml = '';
+      document.querySelectorAll('.cv-edu-form-item').forEach(item => {
+        const title = item.querySelector('.edu-title').value;
+        const subtitle = item.querySelector('.edu-subtitle').value;
+        if(title || subtitle) {
+          eduHtml += `
+            <div class="cv-item">
+              <div class="cv-item-title">${title}</div>
+              <div class="cv-item-subtitle">${subtitle}</div>
+            </div>
+          `;
+        }
+      });
+      document.getElementById('cv-out-edu-list').innerHTML = eduHtml || '<div class="cv-text">Nenhuma formação informada.</div>';
     };
     
     document.getElementById('btn-download-cv').addEventListener('click', () => {
@@ -981,6 +1069,9 @@ function injectWorkspace(tool) {
         lucide.createIcons();
       });
     });
+    
+    // Initial render
+    setTimeout(updateCV, 100);
   }
   // 5. Demais ferramentas (Baseadas em Arquivo com Parâmetro Opcional Dinâmico)
   else {
