@@ -672,6 +672,7 @@ function injectWorkspace(tool) {
         
         /* A4 Page styles */
         .cv-a4 { 
+          --cv-sidebar-bg: #2D3748;
           background: white; 
           width: 100%; 
           aspect-ratio: 1 / 1.414; 
@@ -686,7 +687,7 @@ function injectWorkspace(tool) {
         /* Left Sidebar (Dark) */
         .cv-sidebar {
           width: 35%;
-          background-color: #2D3748;
+          background-color: var(--cv-sidebar-bg);
           color: white;
           padding: 40px 24px;
           display: flex;
@@ -696,29 +697,29 @@ function injectWorkspace(tool) {
           width: 120px;
           height: 120px;
           border-radius: 50%;
-          background: #4A5568;
+          background: rgba(255,255,255,0.1);
           margin: 0 auto 24px auto;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 40px;
           color: #E2E8F0;
-          border: 4px solid #CBD5E0;
+          border: 4px solid rgba(255,255,255,0.3);
         }
         .cv-sidebar-title {
           font-size: 14px;
           font-weight: 700;
-          color: #A0AEC0;
+          color: rgba(255,255,255,0.7);
           text-transform: uppercase;
           letter-spacing: 1px;
           margin-bottom: 16px;
           margin-top: 32px;
-          border-bottom: 1px solid #4A5568;
+          border-bottom: 1px solid rgba(255,255,255,0.2);
           padding-bottom: 8px;
         }
         .cv-contact-item {
           font-size: 11px;
-          color: #E2E8F0;
+          color: rgba(255,255,255,0.9);
           margin-bottom: 12px;
           display: flex;
           align-items: center;
@@ -726,7 +727,7 @@ function injectWorkspace(tool) {
           word-break: break-all;
         }
         .cv-skill-tag {
-          background: rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.15);
           padding: 4px 10px;
           border-radius: 4px;
           font-size: 11px;
@@ -748,7 +749,7 @@ function injectWorkspace(tool) {
         .cv-section-title { 
           font-size: 15px; 
           font-weight: 800; 
-          color: #2D3748; 
+          color: var(--cv-sidebar-bg); 
           margin-bottom: 16px; 
           text-transform: uppercase; 
           letter-spacing: 1px; 
@@ -766,7 +767,7 @@ function injectWorkspace(tool) {
         
         .cv-text { font-size: 12px; color: #4A5568; line-height: 1.7; text-align: justify; }
         
-        .cv-item { margin-bottom: 16px; position: relative; padding-left: 16px; border-left: 2px solid #8B5CF6; }
+        .cv-item { margin-bottom: 16px; position: relative; padding-left: 16px; border-left: 2px solid var(--cv-sidebar-bg); }
         .cv-item-title { font-weight: 800; color: #1A202C; font-size: 14px; }
         .cv-item-subtitle { font-weight: 600; color: #718096; font-size: 12px; margin-bottom: 6px; }
         
@@ -776,7 +777,13 @@ function injectWorkspace(tool) {
       <div class="cv-grid">
         <!-- FORMULÁRIO -->
         <div class="cv-form">
-          <h3 style="margin-bottom: 24px; color: var(--dark-text); display: flex; align-items: center; gap: 8px;"><i data-lucide="edit-3"></i> Preencha seus Dados</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3 style="color: var(--dark-text); display: flex; align-items: center; gap: 8px; margin: 0;"><i data-lucide="edit-3"></i> Seus Dados</h3>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label style="margin: 0; font-size: 12px;">Cor do Tema:</label>
+              <input type="color" id="cv-in-color" value="#2D3748" style="width: 32px; height: 32px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent;" oninput="updateCV()">
+            </div>
+          </div>
           
           <div class="form-group">
             <label>Nome Completo</label>
@@ -912,6 +919,10 @@ function injectWorkspace(tool) {
     lucide.createIcons();
     
     window.updateCV = function() {
+      // Tema
+      const themeColor = document.getElementById('cv-in-color').value || '#2D3748';
+      document.getElementById('cv-a4-preview').style.setProperty('--cv-sidebar-bg', themeColor);
+
       const name = document.getElementById('cv-in-name').value || 'Seu Nome';
       document.getElementById('cv-out-name').textContent = name;
       
