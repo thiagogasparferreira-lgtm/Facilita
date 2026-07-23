@@ -96,3 +96,52 @@ def get_me(token: str, db: Session = Depends(get_db)):
         "language": db_user.language,
         "new_token": new_token
     }
+
+class ForgotPassword(BaseModel):
+    email: str
+
+class ResetPassword(BaseModel):
+    token: str
+    new_password: str
+
+@router.post("/forgot-password")
+def forgot_password(req: ForgotPassword, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == req.email).first()
+    if not db_user:
+        # Prevent email enumeration by always returning success
+        return {"success": True, "message": "Se o e-mail existir, um link foi enviado."}
+        
+    from app.core.security import create_access_token
+    from app.core.email import send_reset_email
+    
+    # Generate a 15-minute token specific for password reset
+    reset_token = create_access_token(
+        data={"sub": db_user.email, "type": "reset"},
+        expires_delta=timedelta(minutes=15)
+    )
+    
+    success = send_reset_email(db_user.email, reset_token)
+    if not success:
+        raise HTTPException(status_code=500, detail="Erro ao enviar e-mail de recuperação.")
+        
+    return {"success": True, "message": "Se o e-mail existir, um link foi enviado."}
+
+@router.post("/reset-password")
+def reset_password(req: ResetPassword, db: Session = Depends(get_db)):
+    from app.core.security import decode_access_token, get_password_hash
+    
+    payload = decode_access_token(req.token)
+    if not payload or payload.get("type") != "reset":
+        raise HTTPException(status_code=400, detail="Token inválido ou expirado.")
+        
+    email = payload.get("sub")
+    db_user = db.query(User).filter(User.email == email).first()
+    
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+        
+    db_user.hashed_password = get_password_hash(req.new_password)
+    db.commit()
+    
+    return {"success": True, "message": "Senha atualizada com sucesso."}
+

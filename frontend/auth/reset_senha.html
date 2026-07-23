@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir Senha | Facilita</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="../js/config.js"></script>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="../index.html" class="auth-logo">
+          <div class="logo-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+            <i data-lucide="zap"></i>
+          </div>
+          Facilita
+        </a>
+        <h2>Nova Senha</h2>
+        <p>Digite e confirme a sua nova senha abaixo.</p>
+      </div>
+      
+      <form id="reset-form">
+        <div class="auth-form-group">
+          <label class="auth-label" for="password">Nova Senha</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="password" class="auth-input" placeholder="Mínimo de 8 caracteres" required minlength="8">
+          </div>
+        </div>
+        
+        <div class="auth-form-group">
+          <label class="auth-label" for="confirm-password">Confirmar Nova Senha</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="confirm-password" class="auth-input" placeholder="Repita a senha" required minlength="8">
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary auth-btn-submit" id="reset-btn">Salvar Nova Senha</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+    
+    // Obtém o token da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    
+    if (!token) {
+      alert("Token de recuperação ausente. Por favor, solicite a recuperação novamente.");
+      window.location.href = "esqueci_senha.html";
+    }
+
+    document.getElementById('reset-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      
+      if (password !== confirmPassword) {
+        alert("As senhas não coincidem!");
+        return;
+      }
+      
+      const btn = document.getElementById('reset-btn');
+      btn.innerHTML = '<div class="loading-spinner" style="width: 20px; height: 20px;"></div>';
+      btn.disabled = true;
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, new_password: password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          alert('Senha alterada com sucesso! Você já pode fazer login.');
+          window.location.href = 'login.html';
+        } else {
+          alert(data.detail || 'Erro ao alterar a senha. O link pode estar expirado.');
+        }
+      } catch (err) {
+        alert('Erro de conexão. Tente novamente.');
+      } finally {
+        btn.innerHTML = 'Salvar Nova Senha';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
