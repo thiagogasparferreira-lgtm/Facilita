@@ -929,7 +929,7 @@ function injectWorkspace(tool) {
       document.getElementById('cv-out-location').textContent = document.getElementById('cv-in-location').value || 'Sua Cidade';
       
       const skillsStr = document.getElementById('cv-in-skills').value || '';
-      const skillsHtml = skillsStr.split(',').map(s => s.trim()).filter(s => s).map(s => \`<span class="cv-skill-tag">\${s}</span>\`).join('');
+      const skillsHtml = skillsStr.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="cv-skill-tag">${s}</span>`).join('');
       document.getElementById('cv-out-skills').innerHTML = skillsHtml || '<span class="cv-skill-tag">Suas Habilidades</span>';
       
       document.getElementById('cv-out-summary').textContent = document.getElementById('cv-in-summary').value || 'Seu resumo...';
