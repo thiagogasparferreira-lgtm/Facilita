@@ -92,6 +92,7 @@ def get_me(token: str, db: Session = Depends(get_db)):
         "email": db_user.email,
         "name": db_user.name,
         "is_pro": db_user.is_pro,
+        "is_admin": db_user.is_admin,
         "avatar_url": db_user.avatar_url,
         "language": db_user.language,
         "new_token": new_token

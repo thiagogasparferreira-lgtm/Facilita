@@ -28,7 +28,11 @@ const API_AUTH_URL = `${API_BASE_URL}/api/v1/auth`;
             role: data.is_admin ? 'admin' : 'user'
           };
           localStorage.setItem('facilita_user_session', JSON.stringify(userData));
-          window.location.replace('../dashboard/index.html');
+          if (userData.role === 'admin') {
+            window.location.replace('../admin/index.html');
+          } else {
+            window.location.replace('../dashboard/index.html');
+          }
         }
       });
     return;
