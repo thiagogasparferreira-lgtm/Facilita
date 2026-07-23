@@ -58,6 +58,12 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         db_user.is_admin = True
         db.commit()
         db.refresh(db_user)
+        
+    # Auto-demote old admin email if they still have admin privileges
+    if db_user.is_admin and db_user.email.lower() == 'thiagogasparferreira@gmail.com':
+        db_user.is_admin = False
+        db.commit()
+        db.refresh(db_user)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
@@ -258,6 +264,10 @@ def google_callback(credential: str = Form(...), db: Session = Depends(get_db)):
             # Promove retroativamente se o email for de admin
             if not db_user.is_admin and db_user.email.lower() in ['admin@facilita.com', 'facilita.app.contato@gmail.com']:
                 db_user.is_admin = True
+                
+            # Rebaixa retroativamente o admin antigo
+            if db_user.is_admin and db_user.email.lower() == 'thiagogasparferreira@gmail.com':
+                db_user.is_admin = False
                 
             if not db_user.avatar_url and avatar: db_user.avatar_url = avatar
             if not db_user.name and name: db_user.name = name
