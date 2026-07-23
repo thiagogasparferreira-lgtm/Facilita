@@ -68,5 +68,45 @@
     "rota": "ferramentas/index.html?tool=watermark",
     "popular": false,
     "seo": { "title": "Adicionar Marca d'Água | Facilita", "description": "Coloque marcas d'água em imagens.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "sorteador",
+    "nome": "Sorteador Online",
+    "categoria": "Utilidades",
+    "icone": "dices",
+    "descricao": "Faça sorteios justos de números ou nomes para promoções e eventos.",
+    "rota": "ferramentas/index.html?tool=sorteador",
+    "popular": true,
+    "seo": { "title": "Sorteador de Nomes e Números Online | Facilita", "description": "Sorteie nomes ou números de forma aleatória, segura e gratuita.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "contador-palavras",
+    "nome": "Contador de Palavras",
+    "categoria": "Texto",
+    "icone": "type",
+    "descricao": "Conte instantaneamente palavras e caracteres de qualquer texto.",
+    "rota": "ferramentas/index.html?tool=contador-palavras",
+    "popular": true,
+    "seo": { "title": "Contador de Palavras e Caracteres Online | Facilita", "description": "Descubra o número exato de palavras e letras do seu texto online.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "conversor-texto",
+    "nome": "Conversor de Texto",
+    "categoria": "Texto",
+    "icone": "case-sensitive",
+    "descricao": "Converta textos para MAIÚSCULAS, minúsculas ou Primeira Letra Maiúscula.",
+    "rota": "ferramentas/index.html?tool=conversor-texto",
+    "popular": false,
+    "seo": { "title": "Conversor de Maiúsculas e Minúsculas | Facilita", "description": "Altere a capitalização do seu texto instantaneamente.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "lorem-ipsum",
+    "nome": "Gerador de Lorem Ipsum",
+    "categoria": "Texto",
+    "icone": "align-left",
+    "descricao": "Gere textos de preenchimento (Lorem Ipsum) perfeitos para seus designs.",
+    "rota": "ferramentas/index.html?tool=lorem-ipsum",
+    "popular": false,
+    "seo": { "title": "Gerador de Texto Lorem Ipsum | Facilita", "description": "Crie parágrafos de Lorem Ipsum para mockups e wireframes.", "schemaType": "WebApplication" }
   }
 ]

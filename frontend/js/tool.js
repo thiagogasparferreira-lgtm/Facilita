@@ -60,6 +60,46 @@ document.addEventListener('DOMContentLoaded', () => {
         "description": "Crie e baixe QR codes customizados com cores e logos em alta resolução para seus links, PIX, Wi-Fi e textos.",
         "schemaType": "WebApplication"
       }
+    },
+    {
+      "id": "sorteador",
+      "nome": "Sorteador Online",
+      "categoria": "Utilidades",
+      "icone": "dices",
+      "descricao": "Faça sorteios justos de números ou nomes para promoções e eventos.",
+      "rota": "ferramentas/index.html?tool=sorteador",
+      "popular": true,
+      "seo": { "title": "Sorteador de Nomes e Números Online | Facilita", "description": "Sorteie nomes ou números de forma aleatória, segura e gratuita.", "schemaType": "WebApplication" }
+    },
+    {
+      "id": "contador-palavras",
+      "nome": "Contador de Palavras",
+      "categoria": "Texto",
+      "icone": "type",
+      "descricao": "Conte instantaneamente palavras e caracteres de qualquer texto.",
+      "rota": "ferramentas/index.html?tool=contador-palavras",
+      "popular": true,
+      "seo": { "title": "Contador de Palavras e Caracteres Online | Facilita", "description": "Descubra o número exato de palavras e letras do seu texto online.", "schemaType": "WebApplication" }
+    },
+    {
+      "id": "conversor-texto",
+      "nome": "Conversor de Texto",
+      "categoria": "Texto",
+      "icone": "case-sensitive",
+      "descricao": "Converta textos para MAIÚSCULAS, minúsculas ou Primeira Letra Maiúscula.",
+      "rota": "ferramentas/index.html?tool=conversor-texto",
+      "popular": false,
+      "seo": { "title": "Conversor de Maiúsculas e Minúsculas | Facilita", "description": "Altere a capitalização do seu texto instantaneamente.", "schemaType": "WebApplication" }
+    },
+    {
+      "id": "lorem-ipsum",
+      "nome": "Gerador de Lorem Ipsum",
+      "categoria": "Texto",
+      "icone": "align-left",
+      "descricao": "Gere textos de preenchimento (Lorem Ipsum) perfeitos para seus designs.",
+      "rota": "ferramentas/index.html?tool=lorem-ipsum",
+      "popular": false,
+      "seo": { "title": "Gerador de Texto Lorem Ipsum | Facilita", "description": "Crie parágrafos de Lorem Ipsum para mockups e wireframes.", "schemaType": "WebApplication" }
     }
   ];
 
@@ -394,6 +434,202 @@ function injectWorkspace(tool) {
       </div>
     `;
     setupPasswordGenLogic();
+  }
+  // 5. Sorteador Online
+  else if (tool.id === 'sorteador') {
+    container.innerHTML = `
+      <div style="max-width: 600px; margin: 0 auto; background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+        <h3 style="margin-bottom: 16px;">Sorteador de Nomes ou Números</h3>
+        <p style="margin-bottom: 16px; color: var(--gray-400);">Digite os nomes ou números abaixo (um por linha):</p>
+        <textarea id="sorteador-input" class="auth-input" style="height: 150px; resize: vertical; margin-bottom: 16px;" placeholder="Ana\nCarlos\nBeatriz\nJoão..."></textarea>
+        
+        <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 24px;">
+          <div style="flex: 1;">
+            <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--gray-300);">Quantos ganhadores?</label>
+            <input type="number" id="sorteador-qtd" class="auth-input" value="1" min="1">
+          </div>
+          <button id="btn-sortear" class="btn btn-primary" style="flex: 2;">
+            <i data-lucide="dices"></i> Sortear Agora
+          </button>
+        </div>
+        
+        <div id="sorteador-result" style="display: none; padding: 24px; background: rgba(147, 51, 234, 0.1); border: 1px solid var(--primary-light); border-radius: 8px; text-align: center;">
+          <h4 style="color: var(--primary-light); margin-bottom: 16px;">Ganhador(es)!</h4>
+          <div id="sorteador-winners" style="font-size: 1.5rem; font-weight: bold; color: white;"></div>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    document.getElementById('btn-sortear').addEventListener('click', () => {
+      const text = document.getElementById('sorteador-input').value.trim();
+      const qtd = parseInt(document.getElementById('sorteador-qtd').value) || 1;
+      
+      if (!text) {
+        alert("Por favor, insira pelo menos um nome ou número.");
+        return;
+      }
+      
+      const items = text.split('\n').map(i => i.trim()).filter(i => i);
+      if (items.length === 0) return;
+      if (qtd > items.length) {
+        alert("A quantidade de ganhadores não pode ser maior que a lista.");
+        return;
+      }
+      
+      // Shuffle array (Fisher-Yates)
+      const shuffled = [...items];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      
+      const winners = shuffled.slice(0, qtd);
+      
+      const resDiv = document.getElementById('sorteador-result');
+      const winnersDiv = document.getElementById('sorteador-winners');
+      
+      winnersDiv.innerHTML = winners.join('<br>');
+      resDiv.style.display = 'block';
+    });
+  }
+  // 6. Contador de Palavras
+  else if (tool.id === 'contador-palavras') {
+    container.innerHTML = `
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <div style="background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-light);" id="count-words">0</div>
+            <div style="color: var(--gray-400); margin-top: 8px;">Palavras</div>
+          </div>
+          <div style="background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-light);" id="count-chars">0</div>
+            <div style="color: var(--gray-400); margin-top: 8px;">Caracteres</div>
+          </div>
+          <div style="background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-light);" id="count-chars-no-space">0</div>
+            <div style="color: var(--gray-400); margin-top: 8px;">S/ Espaços</div>
+          </div>
+        </div>
+        
+        <textarea id="contador-input" class="auth-input" style="height: 300px; resize: vertical; font-size: 1rem; padding: 20px;" placeholder="Cole ou digite seu texto aqui para começar a contar..."></textarea>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    document.getElementById('contador-input').addEventListener('input', (e) => {
+      const text = e.target.value;
+      
+      const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+      const chars = text.length;
+      const charsNoSpace = text.replace(/\s+/g, '').length;
+      
+      document.getElementById('count-words').textContent = words;
+      document.getElementById('count-chars').textContent = chars;
+      document.getElementById('count-chars-no-space').textContent = charsNoSpace;
+    });
+  }
+  // 7. Conversor de Texto
+  else if (tool.id === 'conversor-texto') {
+    container.innerHTML = `
+      <div style="max-width: 800px; margin: 0 auto; background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+        <textarea id="conversor-input" class="auth-input" style="height: 250px; resize: vertical; margin-bottom: 24px; font-size: 1rem;" placeholder="Cole seu texto aqui..."></textarea>
+        
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="btn-maiusculas">MAIÚSCULAS</button>
+          <button class="btn btn-secondary" id="btn-minusculas">minúsculas</button>
+          <button class="btn btn-secondary" id="btn-primeira-letra">Primeira Letra</button>
+          <button class="btn btn-secondary" id="btn-inverter">iNVERTER</button>
+          <button class="btn btn-secondary" id="btn-copiar-conv" style="margin-left: auto;">
+            <i data-lucide="copy"></i> Copiar
+          </button>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    const textarea = document.getElementById('conversor-input');
+    
+    document.getElementById('btn-maiusculas').addEventListener('click', () => {
+      textarea.value = textarea.value.toUpperCase();
+    });
+    
+    document.getElementById('btn-minusculas').addEventListener('click', () => {
+      textarea.value = textarea.value.toLowerCase();
+    });
+    
+    document.getElementById('btn-primeira-letra').addEventListener('click', () => {
+      textarea.value = textarea.value.toLowerCase().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+    });
+    
+    document.getElementById('btn-inverter').addEventListener('click', () => {
+      let result = '';
+      for (let i = 0; i < textarea.value.length; i++) {
+        let char = textarea.value[i];
+        if (char === char.toUpperCase()) {
+          result += char.toLowerCase();
+        } else {
+          result += char.toUpperCase();
+        }
+      }
+      textarea.value = result;
+    });
+    
+    document.getElementById('btn-copiar-conv').addEventListener('click', () => {
+      navigator.clipboard.writeText(textarea.value);
+      const btn = document.getElementById('btn-copiar-conv');
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="check"></i> Copiado!';
+      lucide.createIcons();
+      setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 2000);
+    });
+  }
+  // 8. Gerador de Lorem Ipsum
+  else if (tool.id === 'lorem-ipsum') {
+    container.innerHTML = `
+      <div style="max-width: 800px; margin: 0 auto; background: var(--surface-light); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+        <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 24px;">
+          <div style="flex: 1;">
+            <label style="display: block; margin-bottom: 8px; color: var(--gray-300);">Parágrafos</label>
+            <input type="number" id="lorem-qtd" class="auth-input" value="3" min="1" max="20">
+          </div>
+          <button id="btn-gerar-lorem" class="btn btn-primary" style="flex: 2;">
+            <i data-lucide="align-left"></i> Gerar Lorem Ipsum
+          </button>
+        </div>
+        
+        <div style="position: relative;">
+          <textarea id="lorem-result" class="auth-input" style="height: 300px; resize: vertical; font-size: 1rem; padding: 20px;" readonly></textarea>
+          <button id="btn-copiar-lorem" class="btn btn-secondary" style="position: absolute; top: 16px; right: 16px; padding: 8px 16px; font-size: 0.875rem;">
+            <i data-lucide="copy"></i> Copiar
+          </button>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    const baseLorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    
+    document.getElementById('btn-gerar-lorem').addEventListener('click', () => {
+      const qtd = parseInt(document.getElementById('lorem-qtd').value) || 3;
+      let result = [];
+      for (let i = 0; i < qtd; i++) {
+        result.push(baseLorem);
+      }
+      document.getElementById('lorem-result').value = result.join('\\n\\n');
+    });
+    
+    // Gera inicial
+    document.getElementById('btn-gerar-lorem').click();
+    
+    document.getElementById('btn-copiar-lorem').addEventListener('click', () => {
+      navigator.clipboard.writeText(document.getElementById('lorem-result').value);
+      const btn = document.getElementById('btn-copiar-lorem');
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="check"></i> Copiado!';
+      lucide.createIcons();
+      setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 2000);
+    });
   }
   // 5. Demais ferramentas (Baseadas em Arquivo com Parâmetro Opcional Dinâmico)
   else {
