@@ -1098,14 +1098,14 @@ function injectWorkspace(tool) {
   else if (tool.id === 'resumo-ia') {
     container.innerHTML = `
       <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i data-lucide="sparkles" style="color: #8B5CF6;"></i> Texto Original</h3>
-          <textarea id="ia-input" class="option-input" style="height: 200px; resize: vertical;" placeholder="Cole aqui o texto longo que você deseja resumir..."></textarea>
+        <div style="background: var(--light-gray); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
+          <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--dark-text);"><i data-lucide="sparkles" style="color: #8B5CF6;"></i> Texto Original</h3>
+          <textarea id="ia-input" class="option-input" style="height: 200px; resize: vertical; color: var(--dark-text);" placeholder="Cole aqui o texto longo que você deseja resumir..."></textarea>
           <button id="btn-resumir" class="btn btn-primary" style="margin-top: 16px; width: 100%;">Gerar Resumo Inteligente</button>
         </div>
-        <div id="ia-output-container" style="display: none; background: #F8FAFC; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i data-lucide="file-text"></i> Resumo Gerado</h3>
-          <div id="ia-output" style="line-height: 1.6; color: var(--gray-600);"></div>
+        <div id="ia-output-container" style="display: none; background: var(--blue-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
+          <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--dark-text);"><i data-lucide="file-text"></i> Resumo Gerado</h3>
+          <div id="ia-output" style="line-height: 1.6; color: var(--gray-400);"></div>
         </div>
       </div>
     `;
@@ -1137,8 +1137,8 @@ function injectWorkspace(tool) {
   else if (tool.id === 'calculadora-juros') {
     container.innerHTML = `
       <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <h3 style="margin-bottom: 16px;">Simulador</h3>
+        <div style="background: var(--light-gray); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
+          <h3 style="margin-bottom: 16px; color: var(--dark-text);">Simulador</h3>
           <div class="form-group" style="margin-bottom: 16px;">
             <label>Valor Inicial (R$)</label>
             <input type="number" id="calc-inicial" class="option-input" value="1000">
@@ -1157,12 +1157,12 @@ function injectWorkspace(tool) {
           </div>
           <button id="btn-calcular" class="btn btn-primary" style="width: 100%;">Calcular Rendimento</button>
         </div>
-        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-          <h3 style="color: #166534; margin-bottom: 8px;">Valor Final Estimado</h3>
-          <div id="calc-resultado" style="font-size: 36px; font-weight: 800; color: #15803D; margin-bottom: 16px;">R$ 0,00</div>
-          <div style="width: 100%; text-align: left; margin-top: 16px; border-top: 1px solid #BBF7D0; padding-top: 16px; color: #166534;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Investido:</span> <strong id="calc-investido">R$ 0,00</strong></div>
-            <div style="display: flex; justify-content: space-between;"><span>Total em Juros:</span> <strong id="calc-juros">R$ 0,00</strong></div>
+        <div style="background: var(--blue-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+          <h3 style="color: var(--light-blue); margin-bottom: 8px;">Valor Final Estimado</h3>
+          <div id="calc-resultado" style="font-size: 36px; font-weight: 800; color: var(--primary-blue); margin-bottom: 16px;">R$ 0,00</div>
+          <div style="width: 100%; text-align: left; margin-top: 16px; border-top: 1px solid var(--gray-200); padding-top: 16px; color: var(--gray-400);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Investido:</span> <strong id="calc-investido" style="color: var(--dark-text);">R$ 0,00</strong></div>
+            <div style="display: flex; justify-content: space-between;"><span>Total em Juros:</span> <strong id="calc-juros" style="color: var(--primary-blue);">R$ 0,00</strong></div>
           </div>
         </div>
       </div>
@@ -1193,8 +1193,8 @@ function injectWorkspace(tool) {
   }
   else if (tool.id === 'pomodoro-estudos') {
     container.innerHTML = `
-      <div style="max-width: 600px; margin: 0 auto; background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 48px 24px; text-align: center;">
-        <h2 style="font-size: 24px; color: var(--gray-600); margin-bottom: 8px;">Foco nos Estudos</h2>
+      <div style="max-width: 600px; margin: 0 auto; background: var(--light-gray); border: 1px solid var(--gray-200); border-radius: 12px; padding: 48px 24px; text-align: center;">
+        <h2 style="font-size: 24px; color: var(--gray-400); margin-bottom: 8px;">Foco nos Estudos</h2>
         <div id="pomodoro-timer" style="font-size: 96px; font-weight: 900; color: var(--dark-text); font-variant-numeric: tabular-nums; margin: 32px 0; line-height: 1;">25:00</div>
         <div style="display: flex; justify-content: center; gap: 16px;">
           <button id="btn-pomo-start" class="btn btn-primary" style="font-size: 18px; padding: 12px 32px;">Iniciar</button>
