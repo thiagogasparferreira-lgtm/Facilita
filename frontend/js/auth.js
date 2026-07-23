@@ -10,6 +10,30 @@ const API_AUTH_URL = `${API_BASE_URL}/api/v1/auth`;
 
 // Auto-redirect se já estiver logado (evita mostrar form de login para quem já tem sessão)
 (function autoRedirectIfLoggedIn() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const googleToken = urlParams.get('google_token');
+  
+  if (googleToken) {
+    // Buscar os dados do usuário a partir do token
+    fetch(`${API_BASE_URL}/api/v1/auth/me?token=${googleToken}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.email) {
+          const userData = {
+            token: data.new_token || googleToken,
+            email: data.email,
+            name: data.name,
+            avatar: data.avatar_url,
+            plan: data.is_pro ? 'PRO' : 'FREE',
+            role: data.is_admin ? 'admin' : 'user'
+          };
+          localStorage.setItem('facilita_user_session', JSON.stringify(userData));
+          window.location.replace('../dashboard/index.html');
+        }
+      });
+    return;
+  }
+
   const isAuthPage = window.location.pathname.includes('/auth/login.html') || window.location.pathname.includes('/auth/cadastro.html');
   if (isAuthPage) {
     const sessionData = localStorage.getItem('facilita_user_session');
