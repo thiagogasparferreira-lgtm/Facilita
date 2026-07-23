@@ -675,6 +675,7 @@ function injectWorkspace(tool) {
           --cv-sidebar-bg: #2D3748;
           background: white; 
           width: 100%; 
+          min-width: 794px;
           aspect-ratio: 1 / 1.414; 
           box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
           font-family: 'Inter', sans-serif; 
@@ -865,7 +866,7 @@ function injectWorkspace(tool) {
             </button>
           </div>
           
-          <div style="position: relative; width: 100%;">
+          <div style="position: relative; width: 100%; overflow-x: auto; overflow-y: hidden; padding-bottom: 8px;">
             <div id="cv-a4-preview" class="cv-a4">
               <!-- SIDEBAR -->
               <div class="cv-sidebar">

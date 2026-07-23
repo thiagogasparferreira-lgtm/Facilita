@@ -926,11 +926,24 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 768px) {
-  .header-actions .btn {
-    display: none; /* Esconde CTA do header no mobile */
+  .header {
+    height: auto;
+    padding: 20px 0;
+  }
+  .header-container {
+    flex-direction: column;
+    gap: 16px;
   }
   .nav-menu {
-    display: none; /* Esconde menu tradicional no mobile */
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 12px;
   }
   .hero {
     min-height: auto;
