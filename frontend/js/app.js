@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activeCategoryFilter = category;
         
         // Scroll suave até o container de ferramentas
-        const target = document.getElementById('catalogo');
+        const target = document.getElementById('tools-container');
         if (target) {
           window.scrollTo({
             top: target.offsetTop - 80,
