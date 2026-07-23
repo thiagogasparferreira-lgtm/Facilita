@@ -100,6 +100,16 @@ document.addEventListener('DOMContentLoaded', () => {
       "rota": "ferramentas/index.html?tool=lorem-ipsum",
       "popular": false,
       "seo": { "title": "Gerador de Texto Lorem Ipsum | Facilita", "description": "Crie parágrafos de Lorem Ipsum para mockups e wireframes.", "schemaType": "WebApplication" }
+    },
+    {
+      "id": "gerador-curriculo",
+      "nome": "Criador de Currículo",
+      "categoria": "Profissional",
+      "icone": "briefcase",
+      "descricao": "Crie um currículo com design premium em tempo real e baixe em PDF.",
+      "rota": "ferramentas/index.html?tool=gerador-curriculo",
+      "popular": true,
+      "seo": { "title": "Criador de Currículo Premium Online | Facilita", "description": "Gere seu currículo profissional em minutos. Layout premium e moderno, exportação direto para PDF.", "schemaType": "WebApplication" }
     }
   ];
 
@@ -629,6 +639,195 @@ function injectWorkspace(tool) {
       btn.innerHTML = '<i data-lucide="check"></i> Copiado!';
       lucide.createIcons();
       setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 2000);
+    });
+  }
+  // 9. Gerador de Currículo Premium
+  else if (tool.id === 'gerador-curriculo') {
+    // Inject html2pdf
+    if (!document.getElementById('html2pdf-script')) {
+      const script = document.createElement('script');
+      script.id = 'html2pdf-script';
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      document.head.appendChild(script);
+    }
+    
+    // Check if user is PRO
+    const userStr = localStorage.getItem('facilita_user_session');
+    let isPro = false;
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        isPro = user.plano === 'pro';
+      } catch(e) {}
+    }
+
+    container.innerHTML = `
+      <style>
+        .cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; max-width: 1200px; margin: 0 auto; }
+        @media (max-width: 900px) { .cv-grid { grid-template-columns: 1fr; } }
+        .cv-form { background: var(--light-gray); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); }
+        .cv-form .form-group { margin-bottom: 16px; }
+        .cv-form label { display: block; margin-bottom: 8px; color: var(--gray-400); font-size: 0.875rem; font-weight: 600; }
+        .cv-preview-container { background: var(--light-gray); border: 1px solid var(--gray-200); padding: 24px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; }
+        .cv-a4 { background: white; width: 100%; aspect-ratio: 1 / 1.414; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; font-family: 'Inter', sans-serif; overflow: hidden; position: relative; text-align: left; }
+        
+        /* CV Theme Styles */
+        .cv-header { border-bottom: 2px solid #8B5CF6; padding-bottom: 16px; margin-bottom: 24px; }
+        .cv-name { font-size: 28px; font-weight: 800; color: #111; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .cv-title { font-size: 16px; font-weight: 600; color: #8B5CF6; margin-bottom: 12px; }
+        .cv-contact { font-size: 12px; color: #555; display: flex; gap: 16px; }
+        .cv-section { margin-bottom: 24px; }
+        .cv-section-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .cv-text { font-size: 12px; color: #444; line-height: 1.6; }
+        .cv-item { margin-bottom: 12px; }
+        .cv-item-title { font-weight: 700; color: #222; font-size: 14px; }
+        .cv-item-subtitle { font-weight: 600; color: #8B5CF6; font-size: 12px; margin-bottom: 4px; }
+        
+        .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(4px); z-index: 10; text-align: center; }
+      </style>
+      
+      <div class="cv-grid">
+        <!-- FORMULÁRIO -->
+        <div class="cv-form">
+          <h3 style="margin-bottom: 24px; color: var(--dark-text); display: flex; align-items: center; gap: 8px;"><i data-lucide="edit-3"></i> Preencha seus Dados</h3>
+          
+          <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="cv-in-name" class="option-input" value="João da Silva" oninput="updateCV()">
+          </div>
+          <div class="form-group">
+            <label>Cargo Desejado</label>
+            <input type="text" id="cv-in-title" class="option-input" value="Desenvolvedor Frontend Sênior" oninput="updateCV()">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="cv-in-email" class="option-input" value="joao@email.com" oninput="updateCV()">
+            </div>
+            <div class="form-group">
+              <label>Telefone</label>
+              <input type="text" id="cv-in-phone" class="option-input" value="(11) 98765-4321" oninput="updateCV()">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Resumo Profissional</label>
+            <textarea id="cv-in-summary" class="option-input" style="height: 100px; resize: vertical;" oninput="updateCV()">Profissional com mais de 5 anos de experiência na criação de interfaces web. Apaixonado por usabilidade e performance, buscando sempre criar a melhor experiência para o usuário.</textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Experiência Recente (Empresa - Cargo)</label>
+            <input type="text" id="cv-in-exp-title" class="option-input" value="Tech Corp - Desenvolvedor Pleno" oninput="updateCV()">
+          </div>
+          <div class="form-group">
+            <label>Descrição da Experiência</label>
+            <textarea id="cv-in-exp-desc" class="option-input" style="height: 80px; resize: vertical;" oninput="updateCV()">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40%.</textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Formação Acadêmica</label>
+            <input type="text" id="cv-in-edu" class="option-input" value="Bacharelado em Ciência da Computação - USP (2020)" oninput="updateCV()">
+          </div>
+        </div>
+        
+        <!-- PREVIEW A4 -->
+        <div class="cv-preview-container">
+          <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 16px; align-items: center;">
+            <h3 style="color: var(--dark-text); margin: 0;">Prévia</h3>
+            <button id="btn-download-cv" class="btn btn-primary" style="font-size: 14px; padding: 8px 16px; ${!isPro ? 'background-color: var(--gray-200); color: var(--gray-500); cursor: not-allowed;' : ''}">
+              ${isPro ? '<i data-lucide="download"></i> Baixar PDF (PRO)' : '<i data-lucide="lock"></i> Requer Plano PRO'}
+            </button>
+          </div>
+          
+          <div style="position: relative; width: 100%;">
+            <div id="cv-a4-preview" class="cv-a4">
+              <div class="cv-header">
+                <div class="cv-name" id="cv-out-name">João da Silva</div>
+                <div class="cv-title" id="cv-out-title">Desenvolvedor Frontend Sênior</div>
+                <div class="cv-contact">
+                  <span id="cv-out-email">✉ joao@email.com</span>
+                  <span id="cv-out-phone">📱 (11) 98765-4321</span>
+                </div>
+              </div>
+              
+              <div class="cv-section">
+                <div class="cv-section-title">Resumo Profissional</div>
+                <div class="cv-text" id="cv-out-summary">Profissional com mais de 5 anos de experiência na criação de interfaces web. Apaixonado por usabilidade e performance, buscando sempre criar a melhor experiência para o usuário.</div>
+              </div>
+              
+              <div class="cv-section">
+                <div class="cv-section-title">Experiência Profissional</div>
+                <div class="cv-item">
+                  <div class="cv-item-title" id="cv-out-exp-title">Tech Corp - Desenvolvedor Pleno</div>
+                  <div class="cv-text" style="margin-top: 4px;" id="cv-out-exp-desc">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40%.</div>
+                </div>
+              </div>
+              
+              <div class="cv-section">
+                <div class="cv-section-title">Formação Acadêmica</div>
+                <div class="cv-item">
+                  <div class="cv-item-title" id="cv-out-edu">Bacharelado em Ciência da Computação - USP (2020)</div>
+                </div>
+              </div>
+            </div>
+            
+            ${!isPro ? `
+            <div class="locked-overlay" id="cv-locked-overlay">
+              <i data-lucide="crown" style="color: #eab308; width: 48px; height: 48px; margin-bottom: 16px;"></i>
+              <h3 style="color: white; margin-bottom: 8px;">Recurso Premium</h3>
+              <p style="color: var(--gray-400); text-align: center; max-width: 80%; margin-bottom: 24px; font-size: 14px;">
+                Assine o plano PRO para remover esta trava e baixar seu currículo em PDF de Alta Resolução.
+              </p>
+              <a href="../pricing/index.html" class="btn btn-primary" style="background: linear-gradient(135deg, #eab308, #d97706); color: white; border: none; font-weight: bold;">Fazer Upgrade Agora</a>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    window.updateCV = function() {
+      document.getElementById('cv-out-name').textContent = document.getElementById('cv-in-name').value || 'Seu Nome';
+      document.getElementById('cv-out-title').textContent = document.getElementById('cv-in-title').value || 'Seu Cargo';
+      document.getElementById('cv-out-email').textContent = '✉ ' + (document.getElementById('cv-in-email').value || 'email@exemplo.com');
+      document.getElementById('cv-out-phone').textContent = '📱 ' + (document.getElementById('cv-in-phone').value || '(00) 00000-0000');
+      document.getElementById('cv-out-summary').textContent = document.getElementById('cv-in-summary').value || 'Seu resumo...';
+      document.getElementById('cv-out-exp-title').textContent = document.getElementById('cv-in-exp-title').value || 'Empresa - Cargo';
+      document.getElementById('cv-out-exp-desc').textContent = document.getElementById('cv-in-exp-desc').value || 'Descrição...';
+      document.getElementById('cv-out-edu').textContent = document.getElementById('cv-in-edu').value || 'Sua formação...';
+    };
+    
+    document.getElementById('btn-download-cv').addEventListener('click', () => {
+      if (!isPro) {
+        window.location.href = '../pricing/index.html';
+        return;
+      }
+      
+      if (typeof html2pdf === 'undefined') {
+        alert("Aguarde a biblioteca de PDF carregar e tente novamente.");
+        return;
+      }
+      
+      const element = document.getElementById('cv-a4-preview');
+      const opt = {
+        margin:       0,
+        filename:     'Meu_Curriculo_Premium.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      
+      const btn = document.getElementById('btn-download-cv');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Gerando PDF...';
+      btn.disabled = true;
+      
+      html2pdf().set(opt).from(element).save().then(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        lucide.createIcons();
+      });
     });
   }
   // 5. Demais ferramentas (Baseadas em Arquivo com Parâmetro Opcional Dinâmico)

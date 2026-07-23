@@ -108,5 +108,15 @@
     "rota": "ferramentas/index.html?tool=lorem-ipsum",
     "popular": false,
     "seo": { "title": "Gerador de Texto Lorem Ipsum | Facilita", "description": "Crie parágrafos de Lorem Ipsum para mockups e wireframes.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "gerador-curriculo",
+    "nome": "Criador de Currículo",
+    "categoria": "Profissional",
+    "icone": "briefcase",
+    "descricao": "Crie um currículo com design premium em tempo real e baixe em PDF.",
+    "rota": "ferramentas/index.html?tool=gerador-curriculo",
+    "popular": true,
+    "seo": { "title": "Criador de Currículo Premium Online | Facilita", "description": "Gere seu currículo profissional em minutos. Layout premium e moderno, exportação direto para PDF.", "schemaType": "WebApplication" }
   }
 ]
