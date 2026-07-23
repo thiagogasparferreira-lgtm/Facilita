@@ -62,6 +62,9 @@ async def check_rate_limit(key: str, max_requests: int, window: int) -> bool:
     return False
 
 async def rate_limit_middleware(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return await call_next(request)
+        
     path = request.url.path
     if path in ["/health", "/version"] or path.startswith("/downloads/"):
         return await call_next(request)
