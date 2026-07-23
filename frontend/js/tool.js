@@ -866,7 +866,7 @@ function injectWorkspace(tool) {
             </button>
           </div>
           
-          <div style="position: relative; width: 100%; overflow-x: auto; overflow-y: hidden; padding-bottom: 8px;">
+          <div id="cv-a4-wrapper" style="position: relative; width: 100%; overflow-x: auto; overflow-y: hidden; padding-bottom: 8px;">
             <div id="cv-a4-preview" class="cv-a4">
               <!-- SIDEBAR -->
               <div class="cv-sidebar">
@@ -1064,15 +1064,36 @@ function injectWorkspace(tool) {
       btn.innerHTML = 'Gerando PDF...';
       btn.disabled = true;
       
+      // Remove zoom for PDF generation
+      element.style.zoom = 1;
+      
       html2pdf().set(opt).from(element).save().then(() => {
         btn.innerHTML = originalText;
         btn.disabled = false;
         lucide.createIcons();
+        scaleCV(); // Reapply zoom
       });
     });
     
+    window.scaleCV = function() {
+      const wrapper = document.getElementById('cv-a4-wrapper');
+      const a4 = document.getElementById('cv-a4-preview');
+      if (!wrapper || !a4) return;
+      const wWidth = wrapper.clientWidth;
+      if (wWidth < 794) {
+        const scale = wWidth / 794;
+        a4.style.zoom = scale;
+      } else {
+        a4.style.zoom = 1;
+      }
+    };
+    window.addEventListener('resize', scaleCV);
+    
     // Initial render
-    setTimeout(updateCV, 100);
+    setTimeout(() => {
+      updateCV();
+      scaleCV();
+    }, 100);
   }
   // 5. Demais ferramentas (Baseadas em Arquivo com Parâmetro Opcional Dinâmico)
   else {
