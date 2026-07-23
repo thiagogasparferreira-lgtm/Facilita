@@ -778,7 +778,7 @@ function injectWorkspace(tool) {
               <p style="color: var(--gray-400); text-align: center; max-width: 80%; margin-bottom: 24px; font-size: 14px;">
                 Assine o plano PRO para remover esta trava e baixar seu currículo em PDF de Alta Resolução.
               </p>
-              <a href="../index.html#pro" class="btn btn-primary" style="background: linear-gradient(135deg, #eab308, #d97706); color: white; border: none; font-weight: bold;">Fazer Upgrade Agora</a>
+              <a href="/#pro" class="btn btn-primary" style="background: linear-gradient(135deg, #eab308, #d97706); color: white; border: none; font-weight: bold;">Fazer Upgrade Agora</a>
             </div>
             ` : ''}
           </div>
@@ -800,7 +800,7 @@ function injectWorkspace(tool) {
     
     document.getElementById('btn-download-cv').addEventListener('click', () => {
       if (!isPro) {
-        window.location.href = '../index.html#pro';
+        window.location.href = '/#pro';
         return;
       }
       
