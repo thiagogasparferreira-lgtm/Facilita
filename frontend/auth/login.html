@@ -55,23 +55,7 @@
       <div class="auth-divider">OU CONTINUAR COM</div>
       
       <!-- Google Identity Services -->
-      <div id="g_id_onload"
-         data-client_id="209055711301-qga9m15q53khrtrtmtd6ql8pis0861b7.apps.googleusercontent.com"
-         data-context="signin"
-         data-ux_mode="popup"
-         data-callback="handleGoogleLogin"
-         data-auto_prompt="false">
-      </div>
-      
-      <div class="g_id_signin"
-         data-type="standard"
-         data-shape="rectangular"
-         data-theme="filled_black"
-         data-text="signin_with"
-         data-size="large"
-         data-logo_alignment="center"
-         data-width="350">
-      </div>
+      <div id="google-btn-container" style="display: flex; justify-content: center; width: 100%;"></div>
 
       <div class="auth-footer" style="margin-top: 20px; text-align: center; font-size: 14px;">
         Ainda não tem uma conta? <a href="cadastro.html" style="color: var(--primary-blue); font-weight: 600;">Criar conta</a>
@@ -86,6 +70,20 @@
   
   <script>
     lucide.createIcons();
+    
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "209055711301-qga9m15q53khrtrtmtd6ql8pis0861b7.apps.googleusercontent.com",
+        callback: handleGoogleLogin,
+        auto_select: false,
+        itp_support: true,
+        cancel_on_tap_outside: true
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("google-btn-container"),
+        { theme: "filled_black", size: "large", type: "standard", shape: "rectangular", width: 350 }
+      );
+    }
     
     async function handleGoogleLogin(response) {
       try {
