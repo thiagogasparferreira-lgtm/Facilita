@@ -669,19 +669,106 @@ function injectWorkspace(tool) {
         .cv-form .form-group { margin-bottom: 16px; }
         .cv-form label { display: block; margin-bottom: 8px; color: var(--gray-400); font-size: 0.875rem; font-weight: 600; }
         .cv-preview-container { background: var(--light-gray); border: 1px solid var(--gray-200); padding: 24px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; }
-        .cv-a4 { background: white; width: 100%; aspect-ratio: 1 / 1.414; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; font-family: 'Inter', sans-serif; overflow: hidden; position: relative; text-align: left; }
         
-        /* CV Theme Styles */
-        .cv-header { border-bottom: 2px solid #8B5CF6; padding-bottom: 16px; margin-bottom: 24px; }
-        .cv-name { font-size: 28px; font-weight: 800; color: #111; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .cv-title { font-size: 16px; font-weight: 600; color: #8B5CF6; margin-bottom: 12px; }
-        .cv-contact { font-size: 12px; color: #555; display: flex; gap: 16px; }
-        .cv-section { margin-bottom: 24px; }
-        .cv-section-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .cv-text { font-size: 12px; color: #444; line-height: 1.6; }
-        .cv-item { margin-bottom: 12px; }
-        .cv-item-title { font-weight: 700; color: #222; font-size: 14px; }
-        .cv-item-subtitle { font-weight: 600; color: #8B5CF6; font-size: 12px; margin-bottom: 4px; }
+        /* A4 Page styles */
+        .cv-a4 { 
+          background: white; 
+          width: 100%; 
+          aspect-ratio: 1 / 1.414; 
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+          font-family: 'Inter', sans-serif; 
+          overflow: hidden; 
+          position: relative; 
+          text-align: left;
+          display: flex;
+        }
+        
+        /* Left Sidebar (Dark) */
+        .cv-sidebar {
+          width: 35%;
+          background-color: #2D3748;
+          color: white;
+          padding: 40px 24px;
+          display: flex;
+          flex-direction: column;
+        }
+        .cv-avatar {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          background: #4A5568;
+          margin: 0 auto 24px auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 40px;
+          color: #E2E8F0;
+          border: 4px solid #CBD5E0;
+        }
+        .cv-sidebar-title {
+          font-size: 14px;
+          font-weight: 700;
+          color: #A0AEC0;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-bottom: 16px;
+          margin-top: 32px;
+          border-bottom: 1px solid #4A5568;
+          padding-bottom: 8px;
+        }
+        .cv-contact-item {
+          font-size: 11px;
+          color: #E2E8F0;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          word-break: break-all;
+        }
+        .cv-skill-tag {
+          background: rgba(255,255,255,0.1);
+          padding: 4px 10px;
+          border-radius: 4px;
+          font-size: 11px;
+          margin-bottom: 8px;
+          display: inline-block;
+          margin-right: 4px;
+        }
+
+        /* Right Content (Light) */
+        .cv-main {
+          width: 65%;
+          background-color: #FFFFFF;
+          padding: 40px 32px;
+        }
+        .cv-name { font-size: 32px; font-weight: 800; color: #1A202C; margin-bottom: 4px; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1.1; }
+        .cv-title { font-size: 16px; font-weight: 600; color: #8B5CF6; margin-bottom: 32px; }
+        
+        .cv-section { margin-bottom: 28px; }
+        .cv-section-title { 
+          font-size: 15px; 
+          font-weight: 800; 
+          color: #2D3748; 
+          margin-bottom: 16px; 
+          text-transform: uppercase; 
+          letter-spacing: 1px; 
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .cv-section-title::after {
+          content: '';
+          flex: 1;
+          height: 2px;
+          background: #E2E8F0;
+          margin-left: 8px;
+        }
+        
+        .cv-text { font-size: 12px; color: #4A5568; line-height: 1.7; text-align: justify; }
+        
+        .cv-item { margin-bottom: 16px; position: relative; padding-left: 16px; border-left: 2px solid #8B5CF6; }
+        .cv-item-title { font-weight: 800; color: #1A202C; font-size: 14px; }
+        .cv-item-subtitle { font-weight: 600; color: #718096; font-size: 12px; margin-bottom: 6px; }
         
         .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(4px); z-index: 10; text-align: center; }
       </style>
@@ -709,6 +796,14 @@ function injectWorkspace(tool) {
               <input type="text" id="cv-in-phone" class="option-input" value="(11) 98765-4321" oninput="updateCV()">
             </div>
           </div>
+          <div class="form-group">
+            <label>Localização (Cidade/Estado)</label>
+            <input type="text" id="cv-in-location" class="option-input" value="São Paulo, SP" oninput="updateCV()">
+          </div>
+          <div class="form-group">
+            <label>Habilidades (separadas por vírgula)</label>
+            <input type="text" id="cv-in-skills" class="option-input" value="JavaScript, React, CSS, HTML5, UI/UX" oninput="updateCV()">
+          </div>
           
           <div class="form-group">
             <label>Resumo Profissional</label>
@@ -716,24 +811,28 @@ function injectWorkspace(tool) {
           </div>
           
           <div class="form-group">
-            <label>Experiência Recente (Empresa - Cargo)</label>
-            <input type="text" id="cv-in-exp-title" class="option-input" value="Tech Corp - Desenvolvedor Pleno" oninput="updateCV()">
+            <label>Experiência Recente (Empresa - Período)</label>
+            <input type="text" id="cv-in-exp-title" class="option-input" value="Tech Corp | 2020 - Atual" oninput="updateCV()">
+          </div>
+          <div class="form-group">
+            <label>Cargo na Experiência</label>
+            <input type="text" id="cv-in-exp-role" class="option-input" value="Desenvolvedor Pleno" oninput="updateCV()">
           </div>
           <div class="form-group">
             <label>Descrição da Experiência</label>
-            <textarea id="cv-in-exp-desc" class="option-input" style="height: 80px; resize: vertical;" oninput="updateCV()">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40%.</textarea>
+            <textarea id="cv-in-exp-desc" class="option-input" style="height: 80px; resize: vertical;" oninput="updateCV()">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40% e aumentando a retenção de usuários.</textarea>
           </div>
           
           <div class="form-group">
-            <label>Formação Acadêmica</label>
-            <input type="text" id="cv-in-edu" class="option-input" value="Bacharelado em Ciência da Computação - USP (2020)" oninput="updateCV()">
+            <label>Formação Acadêmica (Curso - Instituição)</label>
+            <input type="text" id="cv-in-edu" class="option-input" value="Bacharelado em Ciência da Computação - USP" oninput="updateCV()">
           </div>
         </div>
         
         <!-- PREVIEW A4 -->
         <div class="cv-preview-container">
           <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 16px; align-items: center;">
-            <h3 style="color: var(--dark-text); margin: 0;">Prévia</h3>
+            <h3 style="color: var(--dark-text); margin: 0;">Prévia Premium</h3>
             <button id="btn-download-cv" class="btn btn-primary" style="font-size: 14px; padding: 8px 16px; ${!isPro ? 'background-color: var(--gray-200); color: var(--gray-500); cursor: not-allowed;' : ''}">
               ${isPro ? '<i data-lucide="download"></i> Baixar PDF (PRO)' : '<i data-lucide="lock"></i> Requer Plano PRO'}
             </button>
@@ -741,32 +840,57 @@ function injectWorkspace(tool) {
           
           <div style="position: relative; width: 100%;">
             <div id="cv-a4-preview" class="cv-a4">
-              <div class="cv-header">
+              <!-- SIDEBAR -->
+              <div class="cv-sidebar">
+                <div class="cv-avatar" id="cv-out-initials">JS</div>
+                
+                <div class="cv-sidebar-title">Contato</div>
+                <div class="cv-contact-item">
+                  <span style="font-size: 14px;">✉</span>
+                  <span id="cv-out-email">joao@email.com</span>
+                </div>
+                <div class="cv-contact-item">
+                  <span style="font-size: 14px;">📱</span>
+                  <span id="cv-out-phone">(11) 98765-4321</span>
+                </div>
+                <div class="cv-contact-item">
+                  <span style="font-size: 14px;">📍</span>
+                  <span id="cv-out-location">São Paulo, SP</span>
+                </div>
+                
+                <div class="cv-sidebar-title">Habilidades</div>
+                <div id="cv-out-skills">
+                  <span class="cv-skill-tag">JavaScript</span>
+                  <span class="cv-skill-tag">React</span>
+                  <span class="cv-skill-tag">CSS</span>
+                </div>
+              </div>
+              
+              <!-- MAIN CONTENT -->
+              <div class="cv-main">
                 <div class="cv-name" id="cv-out-name">João da Silva</div>
                 <div class="cv-title" id="cv-out-title">Desenvolvedor Frontend Sênior</div>
-                <div class="cv-contact">
-                  <span id="cv-out-email">✉ joao@email.com</span>
-                  <span id="cv-out-phone">📱 (11) 98765-4321</span>
+                
+                <div class="cv-section">
+                  <div class="cv-section-title">Perfil</div>
+                  <div class="cv-text" id="cv-out-summary">Profissional com mais de 5 anos de experiência na criação de interfaces web. Apaixonado por usabilidade e performance, buscando sempre criar a melhor experiência para o usuário.</div>
                 </div>
-              </div>
-              
-              <div class="cv-section">
-                <div class="cv-section-title">Resumo Profissional</div>
-                <div class="cv-text" id="cv-out-summary">Profissional com mais de 5 anos de experiência na criação de interfaces web. Apaixonado por usabilidade e performance, buscando sempre criar a melhor experiência para o usuário.</div>
-              </div>
-              
-              <div class="cv-section">
-                <div class="cv-section-title">Experiência Profissional</div>
-                <div class="cv-item">
-                  <div class="cv-item-title" id="cv-out-exp-title">Tech Corp - Desenvolvedor Pleno</div>
-                  <div class="cv-text" style="margin-top: 4px;" id="cv-out-exp-desc">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40%.</div>
+                
+                <div class="cv-section">
+                  <div class="cv-section-title">Experiência</div>
+                  <div class="cv-item">
+                    <div class="cv-item-title" id="cv-out-exp-role">Desenvolvedor Pleno</div>
+                    <div class="cv-item-subtitle" id="cv-out-exp-title">Tech Corp | 2020 - Atual</div>
+                    <div class="cv-text" id="cv-out-exp-desc">Liderei a migração do sistema legado para React, reduzindo o tempo de carregamento em 40% e aumentando a retenção de usuários.</div>
+                  </div>
                 </div>
-              </div>
-              
-              <div class="cv-section">
-                <div class="cv-section-title">Formação Acadêmica</div>
-                <div class="cv-item">
-                  <div class="cv-item-title" id="cv-out-edu">Bacharelado em Ciência da Computação - USP (2020)</div>
+                
+                <div class="cv-section">
+                  <div class="cv-section-title">Educação</div>
+                  <div class="cv-item">
+                    <div class="cv-item-title" id="cv-out-edu">Bacharelado em Ciência da Computação - USP</div>
+                    <div class="cv-item-subtitle">Concluído</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -788,12 +912,29 @@ function injectWorkspace(tool) {
     lucide.createIcons();
     
     window.updateCV = function() {
-      document.getElementById('cv-out-name').textContent = document.getElementById('cv-in-name').value || 'Seu Nome';
+      const name = document.getElementById('cv-in-name').value || 'Seu Nome';
+      document.getElementById('cv-out-name').textContent = name;
+      
+      // Calculate initials
+      const parts = name.split(' ');
+      let initials = parts[0].charAt(0).toUpperCase();
+      if (parts.length > 1) {
+        initials += parts[parts.length - 1].charAt(0).toUpperCase();
+      }
+      document.getElementById('cv-out-initials').textContent = initials;
+      
       document.getElementById('cv-out-title').textContent = document.getElementById('cv-in-title').value || 'Seu Cargo';
-      document.getElementById('cv-out-email').textContent = '✉ ' + (document.getElementById('cv-in-email').value || 'email@exemplo.com');
-      document.getElementById('cv-out-phone').textContent = '📱 ' + (document.getElementById('cv-in-phone').value || '(00) 00000-0000');
+      document.getElementById('cv-out-email').textContent = document.getElementById('cv-in-email').value || 'email@exemplo.com';
+      document.getElementById('cv-out-phone').textContent = document.getElementById('cv-in-phone').value || '(00) 00000-0000';
+      document.getElementById('cv-out-location').textContent = document.getElementById('cv-in-location').value || 'Sua Cidade';
+      
+      const skillsStr = document.getElementById('cv-in-skills').value || '';
+      const skillsHtml = skillsStr.split(',').map(s => s.trim()).filter(s => s).map(s => \`<span class="cv-skill-tag">\${s}</span>\`).join('');
+      document.getElementById('cv-out-skills').innerHTML = skillsHtml || '<span class="cv-skill-tag">Suas Habilidades</span>';
+      
       document.getElementById('cv-out-summary').textContent = document.getElementById('cv-in-summary').value || 'Seu resumo...';
-      document.getElementById('cv-out-exp-title').textContent = document.getElementById('cv-in-exp-title').value || 'Empresa - Cargo';
+      document.getElementById('cv-out-exp-title').textContent = document.getElementById('cv-in-exp-title').value || 'Empresa | Período';
+      document.getElementById('cv-out-exp-role').textContent = document.getElementById('cv-in-exp-role').value || 'Cargo';
       document.getElementById('cv-out-exp-desc').textContent = document.getElementById('cv-in-exp-desc').value || 'Descrição...';
       document.getElementById('cv-out-edu').textContent = document.getElementById('cv-in-edu').value || 'Sua formação...';
     };
