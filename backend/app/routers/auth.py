@@ -219,3 +219,55 @@ def google_login(req: GoogleLogin, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"Google Login Error: {e}")
         raise HTTPException(status_code=500, detail="Falha ao processar login com Google")
+
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+
+@router.post("/google/callback")
+def google_callback(credential: str = Form(...), db: Session = Depends(get_db)):
+    from google.oauth2 import id_token
+    from google.auth.transport import requests
+    import secrets
+    from app.core.security import get_password_hash, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+    from datetime import timedelta
+    
+    CLIENT_ID = "209055711301-qga9m15q53khrtrtmtd6ql8pis0861b7.apps.googleusercontent.com"
+    try:
+        idinfo = id_token.verify_oauth2_token(credential, requests.Request(), CLIENT_ID)
+        email = idinfo['email']
+        name = idinfo.get('name', 'Usuário Google')
+        avatar = idinfo.get('picture', None)
+        
+        db_user = db.query(User).filter(User.email == email).first()
+        
+        if not db_user:
+            random_password = secrets.token_hex(16)
+            is_admin = email.lower() in ['admin@facilita.com', 'thiagogasparferreira@gmail.com']
+            db_user = User(
+                email=email,
+                hashed_password=get_password_hash(random_password),
+                name=name,
+                avatar_url=avatar,
+                is_admin=is_admin
+            )
+            db.add(db_user)
+            db.commit()
+            db.refresh(db_user)
+        else:
+            if not db_user.avatar_url and avatar: db_user.avatar_url = avatar
+            if not db_user.name and name: db_user.name = name
+            db.commit()
+            
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": db_user.email, "is_pro": db_user.is_pro, "is_admin": db_user.is_admin},
+            expires_delta=access_token_expires
+        )
+        
+        return RedirectResponse(
+            url=f"https://facilita-alpha.vercel.app/dashboard/index.html?google_token={access_token}",
+            status_code=303
+        )
+    except Exception as e:
+        print(f"Google Callback Error: {e}")
+        return RedirectResponse(url="https://facilita-alpha.vercel.app/auth/login.html?error=google_failed", status_code=303)

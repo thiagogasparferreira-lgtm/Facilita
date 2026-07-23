@@ -74,10 +74,9 @@
     window.onload = function () {
       google.accounts.id.initialize({
         client_id: "209055711301-qga9m15q53khrtrtmtd6ql8pis0861b7.apps.googleusercontent.com",
-        callback: handleGoogleLogin,
-        auto_select: false,
-        itp_support: true,
-        cancel_on_tap_outside: true
+        ux_mode: "redirect",
+        login_uri: "https://facilita-api-backend.onrender.com/api/v1/auth/google/callback",
+        auto_select: false
       });
       google.accounts.id.renderButton(
         document.getElementById("google-btn-container"),
