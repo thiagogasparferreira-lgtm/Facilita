@@ -58,19 +58,70 @@
       
       <div class="auth-divider">OU CONTINUAR COM</div>
       
-      <button class="auth-btn-google" type="button" onclick="alert('Integração com o Google estará disponível na próxima atualização! Por enquanto, por favor registre-se com seu e-mail e senha.');">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
-        Google
-      </button>
-      
-      <div class="auth-footer">
-        Já tem uma conta? <a href="login.html">Fazer login</a>
+      <!-- Google Identity Services -->
+      <div id="g_id_onload"
+         data-client_id="209055711301-qga9m15q53khrtrtmtd6ql8pis0861b7.apps.googleusercontent.com"
+         data-context="signup"
+         data-ux_mode="popup"
+         data-callback="handleGoogleLogin"
+         data-auto_prompt="false">
       </div>
+      
+      <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="filled_black"
+         data-text="signup_with"
+         data-size="large"
+         data-logo_alignment="center"
+         data-width="350">
+      </div>
+
+      <div class="auth-footer" style="margin-top: 20px; text-align: center; font-size: 14px;">
+        Já tem uma conta? <a href="login.html" style="color: var(--primary-blue); font-weight: 600;">Entrar</a>
+      </div>
+
     </div>
   </div>
 
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="../js/auth.js"></script>
-  <script>lucide.createIcons();</script>
+  
+  <script>
+    lucide.createIcons();
+    
+    async function handleGoogleLogin(response) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/v1/auth/google-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            credential: response.credential,
+            client_id: "209055711301-qga9m15q53khrtrtmtd6ql8pis0861b7.apps.googleusercontent.com"
+          })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          localStorage.setItem('facilita_user', JSON.stringify({
+            token: data.access_token,
+            email: data.user.email,
+            name: data.user.name,
+            is_pro: data.user.is_pro,
+            is_admin: data.user.is_admin,
+            avatar: data.user.avatar_url
+          }));
+          window.location.href = '../dashboard/index.html';
+        } else {
+          alert(data.detail || 'Falha no cadastro com Google.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro de conexão ao tentar fazer cadastro com Google.');
+      }
+    }
+  </script>
 </body>
 </html>
