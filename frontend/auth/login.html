@@ -42,7 +42,7 @@
         <div class="auth-form-group">
           <div style="display: flex; justify-content: space-between;">
             <label class="auth-label" for="password">Senha</label>
-            <a href="#" style="font-size: 13px; color: var(--primary-blue); font-weight: 500;">Esqueceu a senha?</a>
+            <a href="#" onclick="alert('A recuperação de senha automatizada está em manutenção. Por favor, crie uma nova conta ou contate o suporte.'); return false;" style="font-size: 13px; color: var(--primary-blue); font-weight: 500;">Esqueceu a senha?</a>
           </div>
           <div class="auth-input-wrapper">
             <input type="password" id="password" class="auth-input" placeholder="••••••••" required>
@@ -54,7 +54,7 @@
       
       <div class="auth-divider">OU CONTINUAR COM</div>
       
-      <button class="auth-btn-google">
+      <button class="auth-btn-google" type="button" onclick="alert('Integração com o Google estará disponível na próxima atualização! Por enquanto, por favor entre com seu e-mail e senha.');">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
         Google
       </button>
