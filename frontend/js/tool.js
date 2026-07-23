@@ -399,7 +399,7 @@ function injectWorkspace(tool) {
             <span class="status-badge status-success">Instantâneo</span>
           </div>
           
-          <div class="result-preview" id="qrcode-canvas-wrapper" style="background:#fff; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding:20px; display:flex; justify-content:center; align-items:center; min-height: 200px;">
+          <div class="result-preview" id="qrcode-canvas-wrapper" style="background: var(--light-gray); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding:20px; display:flex; justify-content:center; align-items:center; min-height: 200px;">
             <img id="qrcode-result-img" src="" alt="QR Code Gerado" style="max-width: 100%; border-radius: 8px; max-height:240px;">
           </div>
           
@@ -438,7 +438,7 @@ function injectWorkspace(tool) {
         </div>
         
         <div class="result-card" id="result-card-pass" style="display:none; margin-top: 24px; text-align:center;">
-          <h2 id="pass-result-text" style="background:#f1f5f9; color: #0F172A; padding:20px; border-radius:8px; font-family:monospace; letter-spacing:2px; word-break: break-all;"></h2>
+          <h2 id="pass-result-text" style="background: var(--blue-50); color: var(--dark-text); padding:20px; border-radius:8px; font-family:monospace; letter-spacing:2px; word-break: break-all;"></h2>
           <button class="btn btn-secondary" style="margin-top:15px; width:100%;" onclick="navigator.clipboard.writeText(document.getElementById('pass-result-text').innerText); alert('Senha copiada!')">Copiar Senha</button>
         </div>
       </div>
@@ -762,7 +762,7 @@ function injectWorkspace(tool) {
           content: '';
           flex: 1;
           height: 2px;
-          background: #E2E8F0;
+          background: var(--gray-200);
           margin-left: 8px;
         }
         
@@ -1300,7 +1300,7 @@ function injectWorkspace(tool) {
             <span class="result-card-title">Resultado Processado</span>
             <span class="status-badge status-success" id="generic-time"></span>
           </div>
-          <div style="text-align:center; padding: 24px; background:#fff; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); margin-bottom:20px;">
+          <div style="text-align:center; padding: 24px; background: var(--light-gray); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); margin-bottom:20px;">
             <i data-lucide="file-check" style="width:48px; height:48px; color:#10B981; margin-bottom:12px;"></i>
             <h4 style="margin-bottom:4px;">Arquivo Processado com Sucesso!</h4>
             <p style="color:var(--gray-500); font-size:13px;">Pronto para download.</p>
