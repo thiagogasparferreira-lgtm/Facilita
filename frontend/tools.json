@@ -22,7 +22,7 @@
   {
     "id": "password-gen",
     "nome": "Gerador de Senhas",
-    "categoria": "Segurança",
+    "categoria": "Utilidades",
     "icone": "key-round",
     "descricao": "Crie senhas criptografadas inquebráveis contendo letras, números e símbolos.",
     "rota": "ferramentas/index.html?tool=password-gen",
@@ -82,7 +82,7 @@
   {
     "id": "contador-palavras",
     "nome": "Contador de Palavras",
-    "categoria": "Texto",
+    "categoria": "Trabalho",
     "icone": "type",
     "descricao": "Conte instantaneamente palavras e caracteres de qualquer texto.",
     "rota": "ferramentas/index.html?tool=contador-palavras",
@@ -92,7 +92,7 @@
   {
     "id": "conversor-texto",
     "nome": "Conversor de Texto",
-    "categoria": "Texto",
+    "categoria": "Trabalho",
     "icone": "case-sensitive",
     "descricao": "Converta textos para MAIÚSCULAS, minúsculas ou Primeira Letra Maiúscula.",
     "rota": "ferramentas/index.html?tool=conversor-texto",
@@ -102,7 +102,7 @@
   {
     "id": "lorem-ipsum",
     "nome": "Gerador de Lorem Ipsum",
-    "categoria": "Texto",
+    "categoria": "Trabalho",
     "icone": "align-left",
     "descricao": "Gere textos de preenchimento (Lorem Ipsum) perfeitos para seus designs.",
     "rota": "ferramentas/index.html?tool=lorem-ipsum",
@@ -112,11 +112,41 @@
   {
     "id": "gerador-curriculo",
     "nome": "Criador de Currículo",
-    "categoria": "Profissional",
+    "categoria": "Documentos",
     "icone": "briefcase",
     "descricao": "Crie um currículo com design premium em tempo real e baixe em PDF.",
     "rota": "ferramentas/index.html?tool=gerador-curriculo",
     "popular": true,
     "seo": { "title": "Criador de Currículo Premium Online | Facilita", "description": "Gere seu currículo profissional em minutos. Layout premium e moderno, exportação direto para PDF.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "resumo-ia",
+    "nome": "Resumo Inteligente",
+    "categoria": "IA",
+    "icone": "sparkles",
+    "descricao": "Cole textos longos e deixe nossa IA gerar um resumo rápido com os pontos principais.",
+    "rota": "ferramentas/index.html?tool=resumo-ia",
+    "popular": true,
+    "seo": { "title": "Resumo Inteligente com IA | Facilita", "description": "Resuma textos longos instantaneamente usando inteligência artificial.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "calculadora-juros",
+    "nome": "Calculadora de Juros",
+    "categoria": "Calculadoras",
+    "icone": "calculator",
+    "descricao": "Calcule juros compostos e descubra o rendimento dos seus investimentos.",
+    "rota": "ferramentas/index.html?tool=calculadora-juros",
+    "popular": false,
+    "seo": { "title": "Calculadora de Juros Compostos | Facilita", "description": "Simule investimentos e veja o poder dos juros compostos no longo prazo.", "schemaType": "WebApplication" }
+  },
+  {
+    "id": "pomodoro-estudos",
+    "nome": "Cronômetro Pomodoro",
+    "categoria": "Estudos",
+    "icone": "timer",
+    "descricao": "Aumente seu foco nos estudos com um timer Pomodoro (25 minutos) com alertas.",
+    "rota": "ferramentas/index.html?tool=pomodoro-estudos",
+    "popular": false,
+    "seo": { "title": "Cronômetro Pomodoro para Estudos | Facilita", "description": "Estude com mais foco usando a técnica Pomodoro online e grátis.", "schemaType": "WebApplication" }
   }
 ]

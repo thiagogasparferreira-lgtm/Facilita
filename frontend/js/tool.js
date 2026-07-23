@@ -1095,6 +1095,161 @@ function injectWorkspace(tool) {
       scaleCV();
     }, 100);
   }
+  else if (tool.id === 'resumo-ia') {
+    container.innerHTML = `
+      <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
+          <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i data-lucide="sparkles" style="color: #8B5CF6;"></i> Texto Original</h3>
+          <textarea id="ia-input" class="option-input" style="height: 200px; resize: vertical;" placeholder="Cole aqui o texto longo que você deseja resumir..."></textarea>
+          <button id="btn-resumir" class="btn btn-primary" style="margin-top: 16px; width: 100%;">Gerar Resumo Inteligente</button>
+        </div>
+        <div id="ia-output-container" style="display: none; background: #F8FAFC; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
+          <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i data-lucide="file-text"></i> Resumo Gerado</h3>
+          <div id="ia-output" style="line-height: 1.6; color: var(--gray-600);"></div>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    document.getElementById('btn-resumir').addEventListener('click', () => {
+      const input = document.getElementById('ia-input').value;
+      if (!input.trim()) return alert('Por favor, insira algum texto para resumir.');
+      
+      const btn = document.getElementById('btn-resumir');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Processando com IA...';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        
+        document.getElementById('ia-output-container').style.display = 'block';
+        const sentences = input.match(/[^.!?]+[.!?]+/g) || [input];
+        let summary = sentences.slice(0, Math.max(1, Math.ceil(sentences.length * 0.3))).join(' ');
+        if(summary.length > 400) summary = summary.substring(0, 400) + '...';
+        
+        document.getElementById('ia-output').innerHTML = `<strong>Resumo Executivo:</strong><br><br>${summary}<br><br><em style="font-size: 12px; color: #94a3b8;">*Este é um resumo simulado offline. Na versão em produção conectaremos à API oficial da OpenAI.</em>`;
+        lucide.createIcons();
+      }, 1500);
+    });
+  }
+  else if (tool.id === 'calculadora-juros') {
+    container.innerHTML = `
+      <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
+          <h3 style="margin-bottom: 16px;">Simulador</h3>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Valor Inicial (R$)</label>
+            <input type="number" id="calc-inicial" class="option-input" value="1000">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Aporte Mensal (R$)</label>
+            <input type="number" id="calc-mensal" class="option-input" value="500">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Taxa de Juros Anual (%)</label>
+            <input type="number" id="calc-taxa" class="option-input" value="10">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Período (Anos)</label>
+            <input type="number" id="calc-anos" class="option-input" value="10">
+          </div>
+          <button id="btn-calcular" class="btn btn-primary" style="width: 100%;">Calcular Rendimento</button>
+        </div>
+        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+          <h3 style="color: #166534; margin-bottom: 8px;">Valor Final Estimado</h3>
+          <div id="calc-resultado" style="font-size: 36px; font-weight: 800; color: #15803D; margin-bottom: 16px;">R$ 0,00</div>
+          <div style="width: 100%; text-align: left; margin-top: 16px; border-top: 1px solid #BBF7D0; padding-top: 16px; color: #166534;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Investido:</span> <strong id="calc-investido">R$ 0,00</strong></div>
+            <div style="display: flex; justify-content: space-between;"><span>Total em Juros:</span> <strong id="calc-juros">R$ 0,00</strong></div>
+          </div>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    document.getElementById('btn-calcular').addEventListener('click', () => {
+      const inicial = parseFloat(document.getElementById('calc-inicial').value) || 0;
+      const mensal = parseFloat(document.getElementById('calc-mensal').value) || 0;
+      const taxa = (parseFloat(document.getElementById('calc-taxa').value) || 0) / 100 / 12;
+      const meses = (parseInt(document.getElementById('calc-anos').value) || 0) * 12;
+      
+      let montante = inicial;
+      let investido = inicial;
+      for (let i = 0; i < meses; i++) {
+        montante += mensal;
+        montante *= (1 + taxa);
+        investido += mensal;
+      }
+      
+      const juros = montante - investido;
+      const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+      document.getElementById('calc-resultado').textContent = fmt.format(montante);
+      document.getElementById('calc-investido').textContent = fmt.format(investido);
+      document.getElementById('calc-juros').textContent = fmt.format(juros);
+    });
+    setTimeout(() => document.getElementById('btn-calcular').click(), 100);
+  }
+  else if (tool.id === 'pomodoro-estudos') {
+    container.innerHTML = `
+      <div style="max-width: 600px; margin: 0 auto; background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 48px 24px; text-align: center;">
+        <h2 style="font-size: 24px; color: var(--gray-600); margin-bottom: 8px;">Foco nos Estudos</h2>
+        <div id="pomodoro-timer" style="font-size: 96px; font-weight: 900; color: var(--dark-text); font-variant-numeric: tabular-nums; margin: 32px 0; line-height: 1;">25:00</div>
+        <div style="display: flex; justify-content: center; gap: 16px;">
+          <button id="btn-pomo-start" class="btn btn-primary" style="font-size: 18px; padding: 12px 32px;">Iniciar</button>
+          <button id="btn-pomo-reset" class="btn btn-secondary" style="font-size: 18px; padding: 12px 32px;">Zerar</button>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    
+    let timer = null;
+    let timeLeft = 25 * 60;
+    let isRunning = false;
+    
+    function updateDisplay() {
+      const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const s = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('pomodoro-timer').textContent = `${m}:${s}`;
+    }
+    
+    document.getElementById('btn-pomo-start').addEventListener('click', () => {
+      const btn = document.getElementById('btn-pomo-start');
+      if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+        btn.textContent = 'Continuar';
+        btn.style.background = 'var(--primary-blue)';
+      } else {
+        isRunning = true;
+        btn.textContent = 'Pausar';
+        btn.style.background = '#F59E0B'; // yellow for pause
+        timer = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+          } else {
+            clearInterval(timer);
+            isRunning = false;
+            btn.textContent = 'Iniciar';
+            btn.style.background = 'var(--primary-blue)';
+            alert('Tempo esgotado! Faça uma pausa curta de 5 minutos.');
+          }
+        }, 1000);
+      }
+    });
+    
+    document.getElementById('btn-pomo-reset').addEventListener('click', () => {
+      clearInterval(timer);
+      isRunning = false;
+      timeLeft = 25 * 60;
+      updateDisplay();
+      const btn = document.getElementById('btn-pomo-start');
+      btn.textContent = 'Iniciar';
+      btn.style.background = 'var(--primary-blue)';
+    });
+  }
   // 5. Demais ferramentas (Baseadas em Arquivo com Parâmetro Opcional Dinâmico)
   else {
     let paramHtml = '';
