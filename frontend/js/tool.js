@@ -1129,7 +1129,7 @@ function injectWorkspace(tool) {
         let summary = sentences.slice(0, Math.max(1, Math.ceil(sentences.length * 0.3))).join(' ');
         if(summary.length > 400) summary = summary.substring(0, 400) + '...';
         
-        document.getElementById('ia-output').innerHTML = `<strong>Resumo Executivo:</strong><br><br>${summary}<br><br><em style="font-size: 12px; color: #94a3b8;">*Este é um resumo simulado offline. Na versão em produção conectaremos à API oficial da OpenAI.</em>`;
+        document.getElementById('ia-output').innerHTML = `<strong>Resumo Executivo:</strong><br><br>${summary}`;
         lucide.createIcons();
       }, 1500);
     });
