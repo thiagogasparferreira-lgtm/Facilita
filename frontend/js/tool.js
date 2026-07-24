@@ -1397,6 +1397,9 @@ function sendGenericFileToBackend(toolName, file, paramValue, onProgress, onSucc
       else onError(response.message || "Erro.");
     } catch (e) { onError("Resposta inválida."); }
   };
+  xhr.onerror = () => {
+    onError("Falha de rede ou conexão com o servidor. (CORS/Offline)");
+  };
   xhr.open("POST", `${API_BASE_URL}/api/v1/tools/${toolName}`);
   const headers = getUserSessionHeaders();
   for (const [key, value] of Object.entries(headers)) xhr.setRequestHeader(key, value);
@@ -1429,7 +1432,7 @@ function sendFileToBackend(toolName, file, onProgress, onSuccess, onError) {
   };
 
   xhr.onerror = () => {
-    onError("Falha na conexão com o servidor do Facilita. Certifique-se de que o backend FastAPI está rodando.");
+    onError("Falha de rede ou conexão com o servidor. (CORS/Offline)");
   };
 
   xhr.open("POST", `${API_BASE_URL}/api/v1/tools/${toolName}`);
