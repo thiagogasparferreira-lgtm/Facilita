@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -11,19 +11,33 @@ if SQLALCHEMY_DATABASE_URL:
     # ajusta para postgresql:// que é a sintaxe exigida pelas novas versões do SQLAlchemy
     if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
         SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
-else:
-    # Caso contrário, utiliza o SQLite local padrão para desenvolvimento na raiz do backend
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, 'facilita.db')}"
+
+# Fallback para SQLite local (desenvolvimento ou quando o PostgreSQL não está disponível)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SQLITE_FALLBACK_URL = f"sqlite:///{os.path.join(BASE_DIR, 'facilita.db')}"
+
+if not SQLALCHEMY_DATABASE_URL:
+    SQLALCHEMY_DATABASE_URL = SQLITE_FALLBACK_URL
 
 # connect_args={"check_same_thread": False} só é necessário para conexões SQLite
 connect_args = {}
 if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args=connect_args
-)
+# Tenta conectar ao banco configurado; se falhar (ex: PostgreSQL expirado), usa SQLite
+try:
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
+    # Testa a conexão real
+    with engine.connect() as conn:
+        conn.execute(text("SELECT 1"))
+    print(f"[DB] Conectado com sucesso: {SQLALCHEMY_DATABASE_URL.split('@')[0]}@***")
+except Exception as e:
+    print(f"[DB] Falha ao conectar ao banco principal: {e}")
+    print(f"[DB] Usando SQLite como fallback...")
+    SQLALCHEMY_DATABASE_URL = SQLITE_FALLBACK_URL
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
