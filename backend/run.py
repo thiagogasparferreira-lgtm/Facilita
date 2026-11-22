@@ -11,5 +11,9 @@ if __name__ == "__main__":
     for directory in storage_dirs:
         os.makedirs(directory, exist_ok=True)
         
-    print("Iniciando o servidor FastAPI do Facilita...")
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    host = "0.0.0.0" if os.environ.get("RENDER") else "127.0.0.1"
+    reload_flag = not bool(os.environ.get("RENDER"))  # reload só em dev local
+
+    print(f"Iniciando o servidor FastAPI do Facilita em {host}:{port}...")
+    uvicorn.run("app.main:app", host=host, port=port, reload=reload_flag)
