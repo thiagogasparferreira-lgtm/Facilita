@@ -2,6 +2,8 @@ import os
 import time
 import shutil
 import uuid
+import threading
+import urllib.request
 from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -103,6 +105,30 @@ def health_check():
             "outputs_exists": os.path.exists(OUTPUT_DIR)
         }
     }
+
+# ── KEEP-ALIVE (Anti Cold Start) ─────────────────────────────────────────────
+# Pinga a própria rota /health a cada 10 minutos para impedir o Render Free
+# de colocar o serviço pra dormir por inatividade.
+# ──────────────────────────────────────────────────────────────────────────────
+_KEEP_ALIVE_INTERVAL = int(os.environ.get("KEEP_ALIVE_INTERVAL", 600))  # 10 min
+_RENDER_URL = os.environ.get(
+    "RENDER_EXTERNAL_URL",
+    "https://facilita-api-backend.onrender.com"
+)
+
+def _keep_alive_loop():
+    """Thread daemon que faz self-ping periódico."""
+    while True:
+        time.sleep(_KEEP_ALIVE_INTERVAL)
+        try:
+            urllib.request.urlopen(f"{_RENDER_URL}/health", timeout=30)
+        except Exception:
+            pass  # Falhas silenciosas — o próximo ciclo tenta de novo
+
+# Inicia somente em produção (Render define a variável RENDER)
+if os.environ.get("RENDER"):
+    _t = threading.Thread(target=_keep_alive_loop, daemon=True)
+    _t.start()
 
 @app.get("/version")
 def get_version():
